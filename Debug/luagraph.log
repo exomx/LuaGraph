@@ -1,0 +1,42 @@
+﻿  main.c
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(386,21): warning C4013: 'glm_max' undefined; assuming extern returning int
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(402,21): warning C4013: 'glm_min' undefined; assuming extern returning int
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(507,18): warning C4013: 'glm_pow2' undefined; assuming extern returning int
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(507,55): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(533,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(534,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(547,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(548,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(561,19): warning C4013: 'glm_clamp' undefined; assuming extern returning int
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(561,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(562,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(581,16): warning C4013: 'glm_vec2_fill' undefined; assuming extern returning int
+C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(581,32): warning C4013: 'glm_clamp_zo' undefined; assuming extern returning int
+C:\Users\Light\source\repos\luagraph\include\cglm\util.h(118,19): warning C4142: 'glm_pow2': benign redefinition of type
+C:\Users\Light\source\repos\luagraph\include\cglm\util.h(130,27): warning C4142: 'glm_min': benign redefinition of type
+C:\Users\Light\source\repos\luagraph\include\cglm\util.h(144,27): warning C4142: 'glm_max': benign redefinition of type
+C:\Users\Light\source\repos\luagraph\include\cglm\util.h(159,50): warning C4142: 'glm_clamp': benign redefinition of type
+C:\Users\Light\source\repos\luagraph\include\cglm\util.h(170,25): warning C4142: 'glm_clamp_zo': benign redefinition of type
+C:\Users\Light\source\repos\luagraph\main.c(20,64): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(20,67): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(21,43): warning C4090: '=': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\main.c(34,64): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(61,45): warning C4047: 'function': 'const GLfloat *' differs in levels of indirection from 'mat4'
+C:\Users\Light\source\repos\luagraph\main.c(61,40): warning C4024: 'glad_glUniformMatrix4fv': different types for formal and actual parameter 4
+C:\Users\Light\source\repos\luagraph\main.c(92,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\luagraph\main.c(92,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\luagraph\main.c(91,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(103,47): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(116,32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(116,65): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(117,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(117,65): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(118,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(118,69): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(119,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(119,73): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(140,57): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(145,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+  LINK : C:\Users\Light\source\repos\luagraph\Debug\luagraph.dll not found or not built by the last incremental link; performing full link
+     Creating library C:\Users\Light\source\repos\luagraph\Debug\luagraph.lib and object C:\Users\Light\source\repos\luagraph\Debug\luagraph.exp
+  luagraph.vcxproj -> C:\Users\Light\source\repos\luagraph\Debug\luagraph.dll
