@@ -3,12 +3,12 @@ local window_handle, window_error = lua_graph.open_window("workpls",800,800);
 local render_handle, render_error, a, b, loc = lua_graph.create_renderer(window_handle)
 print(render_error .. a .. b .. window_error .. loc)
 
-santa_hat = lua_graph.load_texture("awoofa.png")
+santa_hat = lua_graph.load_texture("atatatagag.jpg")
 werid = lua_graph.load_texture("awooga.png")
 tabletest = {x=0,y=0,w=100,h=100, r=1,g=0,b=1}
 tabletest2 = {x=200,y=0,w=100,h=100, r=1,g=0,b=0}
 tabletest3 = {x=0,y=150,w=100,h=100, r=1,g=0,b=0}
-tabletest4 = {x=0,y=300,w=100,h=100, r=0.4,g=1,b=0, texture=santa_hat}
+tabletest4 = {x=0,y=300,w=100,h=100, r=0,g=0,b=1, texture=santa_hat}
 tabletest5 = {x=0, y=500,w=50,h=50,r=1,g=1,b=0}
 tabletest6 = {x=400, y=300,w=100,h=100,r=1,g=0,b=1}
 tabletest7 = {x=600, y=300,w=100,h=100,r=1,g=1,b=1}

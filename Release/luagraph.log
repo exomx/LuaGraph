@@ -57,10 +57,10 @@ C:\Users\Light\source\repos\luagraph\main.c(169,139): warning C4244: '=': conver
 C:\Users\Light\source\repos\luagraph\main.c(169,170): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(194,57): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(199,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(285,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(288,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
      Creating library C:\Users\Light\source\repos\luagraph\Release\luagraph.lib and object C:\Users\Light\source\repos\luagraph\Release\luagraph.exp
   Generating code
-  2 of 46 functions ( 4.3%) were compiled, the rest were copied from previous compilation.
+  1 of 46 functions ( 2.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
