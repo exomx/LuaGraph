@@ -470,7 +470,7 @@ int dll_main(lua_State* L) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-    SDL_Window* filler_window = SDL_CreateWindow("Filler", 100, 100, 800, 640, 0); //not really sure why we need to do this but a fake window needs to be opened before any real ones
+    SDL_Window* filler_window = SDL_CreateWindow("debug", 0, 4000, 800, 640, 0); //not really sure why we need to do this but a fake window needs to be opened before any real ones
     //load functions after setup
     luaL_openlib(L, "lua_graph", libprocs, 0);
     return 1;
