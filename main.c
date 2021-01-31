@@ -10,6 +10,8 @@ linkedList windowList;
 linkedList glcontextlist;
 linkedList vfont_table;
 linkedList cbody;
+linkedList chunklists;
+linkedList musiclists;
 GLint default_shaders;
 //ew globals
 SDL_Color white = { 255,255,255 };
@@ -251,8 +253,23 @@ static int LUAPROC_HandleWindowEvents(lua_State* L) {
     lua_setfield(L, -2, "menu");
     lua_pushboolean(L, key_input[SDL_SCANCODE_SPACE]); /* Pushes table value on top of Lua stack */
     lua_setfield(L, -2, "space");
+    int x, y, left, middle, right;
+    Uint32 state = SDL_GetMouseState(&x, &y);
+    left = state & SDL_BUTTON(1), middle = state & SDL_BUTTON(2), right = state & SDL_BUTTON(3);
+    lua_createtable(L, 0, 5);
+    lua_pushnumber(L, x);
+    lua_setfield(L, -2, "x");
+    lua_pushnumber(L, y);
+    lua_setfield(L, -2, "y");
+    lua_pushboolean(L, left);
+    lua_setfield(L, -2, "left");
+    lua_pushboolean(L, middle);
+    lua_setfield(L, -2, "middle");
+    lua_pushboolean(L, right);
+    lua_setfield(L, -2, "right");
+
     lua_pushboolean(L, bReturn);
-    return 2;
+    return 3;
 }
 //now, the texture functions
 static int LUAPROC_LoadTexture(lua_State* L) { //loads texture into an opengl texture object
@@ -362,6 +379,62 @@ static int LUAPROC_CGetBodyPos(lua_State* L) {
     lua_pushnumber(L, pos.y);
     return 2;
 }
+//Audio/mixer functions
+static int LUAPROC_MixerInit(lua_State* L) {
+    lua_settop(L, -1);
+    int channels = luaL_checknumber(L, 1);
+    Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG | MIX_INIT_FLAC);
+    Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048); //add information and error checking stuff
+    Mix_AllocateChannels(channels);
+    return 0;
+}
+static int LUAPROC_MixerCreateChunk(lua_State* L) {
+    lua_settop(L, -1);
+    const char* path = luaL_checkstring(L, 1);
+    int volume = luaL_checknumber(L, 2);
+    Mix_Chunk* tmp_chunk = Mix_LoadWAV(path);
+    Mix_VolumeChunk(tmp_chunk, volume);
+    LIST_AddElement(&chunklists, tmp_chunk);
+    lua_pushnumber(L, ((double)chunklists.count) - 1);
+    return 1;
+}
+static int LUAPROC_MixerVolumeChunk(lua_State* L) {
+    lua_settop(L, -1);
+    int chunk_handle = luaL_checknumber(L, 1);
+    int volume = luaL_checknumber(L, 2);
+    Mix_VolumeChunk(LIST_At(&chunklists, chunk_handle), volume);
+    return 0;
+}
+static int LUAPROC_MixerCreateMusic(lua_State* L) {
+    lua_settop(L, -1);
+    const char* path = luaL_checkstring(L, 1);
+    int volume = luaL_checknumber(L, 2);
+    Mix_Music* tmp_music = Mix_LoadMUS(path);
+    Mix_VolumeMusic(volume);
+    LIST_AddElement(&musiclists, tmp_music);
+    lua_pushnumber(L, ((double)musiclists.count) - 1);
+    return 1;
+}
+static int LUAPROC_MixerVolumeMusic(lua_State* L) {
+    lua_settop(L, -1);
+    int volume = luaL_checknumber(L, 1);
+    Mix_VolumeMusic(volume);
+    return 0;
+}
+static int LUAPROC_MixerPlayChunk(lua_State* L) {
+    lua_settop(L, -1);
+    int chunk_handle = luaL_checknumber(L, 1);
+    int looptimes = luaL_checknumber(L, 2);
+    Mix_PlayChannel(-1, LIST_At(&chunklists, chunk_handle), looptimes);
+    return 0;
+}
+static int LUAPROC_MixerPlayMusic(lua_State* L) {
+    lua_settop(L, -1);
+    int music_handle = luaL_checknumber(L, 1);
+    int looptimes = luaL_checknumber(L, 2);
+    Mix_PlayMusic(LIST_At(&musiclists, music_handle), looptimes);
+    return 0;
+}
 static const struct luaL_reg libprocs[] = {
    {"open_window",LUAPROC_OpenWindow},
    {"create_renderer", LUAPROC_CreateGLContext},
@@ -380,6 +453,13 @@ static const struct luaL_reg libprocs[] = {
    {"physics_addbody", LUAPROC_CAddBody},
    {"physics_timestep", LUAPROC_CTimeStep},
    {"physics_getbodypos", LUAPROC_CGetBodyPos},
+   {"audio_init", LUAPROC_MixerInit},
+   {"audio_createchunk", LUAPROC_MixerCreateChunk},
+   {"audio_volumechunk", LUAPROC_MixerVolumeChunk},
+   {"audio_createmusic", LUAPROC_MixerCreateMusic},
+   {"audio_volumemusic", LUAPROC_MixerVolumeMusic},
+   {"audio_playchunk", LUAPROC_MixerPlayChunk},
+   {"audio_playmusic", LUAPROC_MixerPlayMusic},
    {NULL, NULL}  /* sentinel */
 };
 extern _declspec(dllexport) int dll_main(lua_State*);

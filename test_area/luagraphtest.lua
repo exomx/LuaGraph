@@ -27,11 +27,15 @@ lua_graph.set_glbuffer(tabletable)
 lua_graph.change_backgroundcolor(0,0,0)
 lua_graph.open_physics(0,0)
 bodyhandle = lua_graph.physics_addbody("static", tabletest4)
+
+lua_graph.audio_init(16)
+testaudio = lua_graph.audio_createchunk("overtime_bell.wav", 32)
+lua_graph.audio_playchunk(testaudio, 0)
 while true do
 	lua_graph.physics_timestep(60)
 	x, y = lua_graph.physics_getbodypos(bodyhandle)
 	print(x)
-    keytable, close = lua_graph.handle_windowevents(window_handle)
+    keytable, mouse, close = lua_graph.handle_windowevents(window_handle)
 	if close then
 	return;
 	end
@@ -57,14 +61,24 @@ while true do
 	if keytable.y then
 	tabletest9.angle = tabletest9.angle + 0.1
 	end
-	if keytable.u then
-	tabletest.angle = tabletest.angle + math.random(0.05,0.2)
-	tabletest2.angle = tabletest2.angle + math.random(0.05,0.2)
-	tabletest3.angle = tabletest3.angle + math.random(0.05,0.2)
-	tabletest5.angle = tabletest5.angle + math.random(0.05,0.2)
-	tabletest6.angle = tabletest6.angle + math.random(0.05,0.2)
-	tabletest7.angle = tabletest7.angle + math.random(0.05,0.2)
-	tabletest8.angle = tabletest8.angle + math.random(0.05,0.2)
+	if mouse.left then
+	tabletest.angle = tabletest.angle + (math.random(1,4) / 10)
+	tabletest2.angle = tabletest2.angle + (math.random(1,4) / 10)
+	tabletest3.angle = tabletest3.angle + (math.random(1,4) / 10)
+	tabletest5.angle = tabletest5.angle + (math.random(1,4) / 10)
+	tabletest6.angle = tabletest6.angle + (math.random(1,4) / 10)
+	tabletest7.angle = tabletest7.angle + (math.random(1,4) / 10)
+	tabletest8.angle = tabletest8.angle + (math.random(1,4) / 10)
+	lua_graph.set_glbuffer(tabletable)
+	end
+	if mouse.right then
+	tabletest.angle = tabletest.angle + (math.random(1,4) / -10)
+	tabletest2.angle = tabletest2.angle + (math.random(1,4) / -10)
+	tabletest3.angle = tabletest3.angle + (math.random(1,4) / -10)
+	tabletest5.angle = tabletest5.angle + (math.random(1,4) / -10)
+	tabletest6.angle = tabletest6.angle + (math.random(1,4) / -10)
+	tabletest7.angle = tabletest7.angle + (math.random(1,4) / -10)
+	tabletest8.angle = tabletest8.angle + (math.random(1,4) / -10)
 	lua_graph.set_glbuffer(tabletable)
 	end
 	lua_graph.clear_window()
