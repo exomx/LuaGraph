@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <string.h>
 #include <cglm/cglm.h>
 #include <lua/luaconf.h>
 #include <lua/lua.h>
@@ -7,3 +9,4 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
+#include <chipmunk/chipmunk.h>

@@ -1,10 +1,15 @@
 #include "mainheader.h"
 #include "auxh/linkedlist_h.h"
+//misc internal functions
 GLint GL_CompileShader(char* shader_fname, GLenum type);
+float* INTERNAL_RotatePoint(float cx, float cy, float px, float py, float angle);
+float* INTERNAL_GetCenterRect(float  x, float y, float w, float h);
+void INTERNAL_RotateRectPoints(float* center, float* points, float angle);
 
 linkedList windowList;
 linkedList glcontextlist;
 linkedList vfont_table;
+linkedList cbody;
 GLint default_shaders;
 //ew globals
 SDL_Color white = { 255,255,255 };
@@ -13,6 +18,7 @@ int gl_array_buffer_size = 0; //global size of array buffer
 int max_gl_array_buffer_size = 10; //measured in amount of quads
 SDL_Event eventhandle; //More global window stuff ik, we have to make a thread system to actually use the window list
 Uint8* key_input; //keyboard stuff
+cpSpace* space; //global chipmunk space, lord knows I dont want to make a list of these and have to manage them
 
 static int LUAPROC_OpenWindow(lua_State* L) {
     lua_settop(L, -1);
@@ -110,19 +116,18 @@ static int LUAPROC_DrawQuadFly(lua_State* L) { //fly meaning "on the fly"
     lua_getfield(L, 1, "g");
     lua_getfield(L, 1, "b");
     lua_getfield(L, 1, "texture");
-    double x = luaL_checknumber(L, -8);
-    double y = luaL_checknumber(L, -7);
-    double w = luaL_checknumber(L, -6);
-    double h = luaL_checknumber(L, -5);
-    double r = luaL_checknumber(L, -4);
-    double g = luaL_checknumber(L, -3);
-    double b = luaL_checknumber(L, -2);
-    GLint texture_id = luaL_checknumber(L, -1);
+    lua_getfield(L, 1, "angle");
+    double x = luaL_checknumber(L, -9), y = luaL_checknumber(L, -8), w = luaL_checknumber(L, -7), h = luaL_checknumber(L, -6), r = luaL_checknumber(L, -5);
+    double g = luaL_checknumber(L, -4), b = luaL_checknumber(L, -3);
+    GLint texture_id = luaL_checknumber(L, -2);
+    double angle = luaL_checknumber(L, -1);
     if (texture_id)
         glBindTexture(GL_TEXTURE_2D, texture_id);
     else
         glBindTexture(GL_TEXTURE_2D, null_tex);
     float tmp_vertexes[28] = { x,y + h, r, g, b, 0, 1, x,y, r, g, b, 0, 0, x + w, y, r, g, b, 1, 0, x + w,y + h, r, g, b, 1, 1 }; //create correct points for quad
+    float* center_points = INTERNAL_GetCenterRect(x, y, w, h);
+    INTERNAL_RotateRectPoints(center_points, tmp_vertexes, angle);
     glBufferSubData(GL_ARRAY_BUFFER, NULL, sizeof(float) * 28, tmp_vertexes); //the first spot is reserved for this function call
     glDrawArrays(GL_QUADS, 0, 4);
     int error = glGetError();
@@ -156,17 +161,16 @@ static int LUAPROC_SetDrawBuffer(lua_State* L) {
         lua_getfield(L, table_pos, "r");
         lua_getfield(L, table_pos, "g");
         lua_getfield(L, table_pos, "b");
-        double x = luaL_checknumber(L, -7);
-        double y = luaL_checknumber(L, -6);
-        double w = luaL_checknumber(L, -5);
-        double h = luaL_checknumber(L, -4);
-        double r = luaL_checknumber(L, -3);
-        double g = luaL_checknumber(L, -2);
-        double b = luaL_checknumber(L, -1);
+        lua_getfield(L, table_pos, "angle"); //finish adding angle support! Dont forget that this is one big array of vertexes so you might have to do some hacky stuff to get rect rot proc to work
+        double x = luaL_checknumber(L, -8), y = luaL_checknumber(L, -7), w = luaL_checknumber(L, -6), h = luaL_checknumber(L, -5), r = luaL_checknumber(L, -4);
+        double g = luaL_checknumber(L, -3), b = luaL_checknumber(L, -2), angle = luaL_checknumber(L, -1);
         tmp_vertexes[i * 28] = x, tmp_vertexes[i * 28 + 1] = y + h, tmp_vertexes[i * 28 + 2] = r, tmp_vertexes[i * 28+ 3] = g, tmp_vertexes[i * 28 + 4] = b, tmp_vertexes[i * 28 + 5] = 0, tmp_vertexes[i * 28 + 6] = 1;
         tmp_vertexes[i * 28 + 7] = x, tmp_vertexes[i * 28 + 8] = y, tmp_vertexes[i * 28 + 9] = r, tmp_vertexes[i * 28 + 10] = g, tmp_vertexes[i * 28 + 11] = b, tmp_vertexes[i * 28 + 12] = 0, tmp_vertexes[i * 28 + 13] = 0;
         tmp_vertexes[i * 28 + 14] = x + w, tmp_vertexes[i * 28 + 15] = y, tmp_vertexes[i * 28 + 16] = r, tmp_vertexes[i * 28 + 17] = g, tmp_vertexes[i * 28 + 18] = b, tmp_vertexes[i * 28 + 19] = 1, tmp_vertexes[i * 28 + 20] = 0;
         tmp_vertexes[i * 28 + 21] = x + w, tmp_vertexes[i * 28 + 22] = y + h, tmp_vertexes[i * 28 + 23] = r, tmp_vertexes[i * 28 + 24] = g, tmp_vertexes[i * 28 + 25] = b, tmp_vertexes[i * 28 + 26] = 1, tmp_vertexes[i * 28 + 27] = 1;
+        float* center_points = INTERNAL_GetCenterRect(x, y, w, h);
+        float* offsetp = &tmp_vertexes[i * 28];
+        INTERNAL_RotateRectPoints(center_points, offsetp, angle);
     }
     glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 28, sizeof(float) * gl_array_buffer_size, tmp_vertexes);
     lua_pushnumber(L, glGetError());
@@ -301,6 +305,63 @@ static int LUAPROC_RenderFontFast(lua_State* L) { //this is called "fast", but I
     lua_pushnumber(L, tmp_tex);
     return 1;
 }
+static int LUAPROC_CloseWindow(lua_State* L) {
+    //roflcopter, this does nothing lmosa
+    return 1;
+}
+static int LUAPROC_OpenChipmunk(lua_State* L) {
+    lua_settop(L, -1);
+    float gravx = luaL_checknumber(L, 1);
+    float gravy = luaL_checknumber(L, 2);
+    cpVect gravity = cpv(gravx, gravy);
+    space = cpSpaceNew();
+    cpSpaceSetGravity(space, gravity);
+    return 0;
+}
+static int LUAPROC_CAddBody(lua_State* L) {
+    lua_settop(L, -1);
+    cpBodyType actual_type;
+    const char* type = luaL_checkstring(L, 1);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    lua_getfield(L, 2, "x");
+    lua_getfield(L, 2, "y");
+    lua_getfield(L, 2, "w");
+    lua_getfield(L, 2, "h");
+    float x = lua_tonumber(L, -4), y = lua_tonumber(L, -3), w = lua_tonumber(L, -2), h = lua_tonumber(L, -1);
+    cpVect body_pos = cpv(x, y);
+    if (strcmp(type, "dynamic"))
+        actual_type = CP_BODY_TYPE_DYNAMIC;
+    else if (strcmp(type, "kinematic"))
+        actual_type = CP_BODY_TYPE_KINEMATIC;
+    else if (strcmp(type, "static"))
+        actual_type = CP_BODY_TYPE_STATIC;
+
+    cpBody* tmp_body = cpBodyNew(1000, 0); //we only care about returning the body since that will be used the most and we can get the shape from the body at anytime
+    cpBodySetType(tmp_body, actual_type);
+    cpShape* tmp_shape = cpBoxShapeNew(tmp_body, w, h, w / 2);
+    cpShapeSetFriction(tmp_shape, 1);
+    cpSpaceAddBody(space, tmp_body);
+    cpSpaceAddShape(space, tmp_shape);
+    LIST_AddElement(&cbody, tmp_body);
+    lua_pushnumber(L, ((double)cbody.count) - 1);
+    return 1;
+}
+static int LUAPROC_CTimeStep(lua_State* L) {
+    lua_settop(L, -1);
+    float frame_rate = luaL_checknumber(L, 1);
+    float timestep = 1 / frame_rate;
+    cpSpaceStep(space, timestep);
+    return 0;
+}
+static int LUAPROC_CGetBodyPos(lua_State* L) {
+    lua_settop(L, -1);
+    float body_handle = luaL_checknumber(L, 1);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpVect pos = cpBodyGetPosition(tmp_body);
+    lua_pushnumber(L, pos.x);
+    lua_pushnumber(L, pos.y);
+    return 2;
+}
 static const struct luaL_reg libprocs[] = {
    {"open_window",LUAPROC_OpenWindow},
    {"create_renderer", LUAPROC_CreateGLContext},
@@ -315,6 +376,10 @@ static const struct luaL_reg libprocs[] = {
    {"load_font", LUAPROC_LoadFont},
    {"generate_fonttexture", LUAPROC_RenderFontFast},
    {"handle_windowevents", LUAPROC_HandleWindowEvents},
+   {"open_physics", LUAPROC_OpenChipmunk},
+   {"physics_addbody", LUAPROC_CAddBody},
+   {"physics_timestep", LUAPROC_CTimeStep},
+   {"physics_getbodypos", LUAPROC_CGetBodyPos},
    {NULL, NULL}  /* sentinel */
 };
 extern _declspec(dllexport) int dll_main(lua_State*);
