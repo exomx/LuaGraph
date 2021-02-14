@@ -435,6 +435,53 @@ static int LUAPROC_MixerPlayMusic(lua_State* L) {
     Mix_PlayMusic(LIST_At(&musiclists, music_handle), looptimes);
     return 0;
 }
+//misc
+static int LUAPROC_MathRotateVel(lua_State* L) {
+    lua_settop(L, -1);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    float angle = luaL_checknumber(L, 2);
+    lua_getfield(L, 1, "x");
+    lua_getfield(L, 1, "y");
+    float x = luaL_checknumber(L, 3), y = luaL_checknumber(L, 4);
+    float* newpoint = INTERNAL_RotatePoint(0, 0, x, y, angle);
+    lua_createtable(L, 0, 2);
+    lua_pushnumber(L, newpoint[0]);
+    lua_setfield(L, 5, "x");
+    lua_pushnumber(L, newpoint[1]);
+    lua_setfield(L, 5, "y");
+    return 1;
+}
+static int LUAPROC_MathAngleBetween(lua_State* L) {
+    lua_settop(L, -1);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    lua_getfield(L, 1, "x");
+    lua_getfield(L, 1, "y");
+    lua_getfield(L, 2, "x");
+    lua_getfield(L, 2, "y");
+    float x1 = lua_tonumber(L, 3), y1 = lua_tonumber(L, 4), x2 = lua_tonumber(L, 5), y2 = lua_tonumber(L, 6);
+    float radians = atan2((double)y2 - y1, (double)x2 - x1);
+    //convert to radians
+    float angle = radians * (180 / 3.141592);
+    lua_pushnumber(L, angle);
+    return 1;
+}
+static int LUAPROC_MathCenterOfRect(lua_State* L) {
+    lua_settop(L, -1);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    lua_getfield(L, 1, "x");
+    lua_getfield(L, 1, "y");
+    lua_getfield(L, 1, "w");
+    lua_getfield(L, 1, "h");
+    float x = lua_tonumber(L, 2), y = lua_tonumber(L, 3), w = lua_tonumber(L, 4), h = lua_tonumber(L, 5);
+    float* centerpoints = INTERNAL_GetCenterRect(x, y, w, h);
+    lua_createtable(L, 0, 2);
+    lua_pushnumber(L, centerpoints[0]);
+    lua_setfield(L, 6, "x");
+    lua_pushnumber(L, centerpoints[1]);
+    lua_setfield(L, 6, "y");
+    return 1;
+}
 static const struct luaL_reg libprocs[] = {
    {"open_window",LUAPROC_OpenWindow},
    {"create_renderer", LUAPROC_CreateGLContext},
@@ -460,6 +507,9 @@ static const struct luaL_reg libprocs[] = {
    {"audio_volumemusic", LUAPROC_MixerVolumeMusic},
    {"audio_playchunk", LUAPROC_MixerPlayChunk},
    {"audio_playmusic", LUAPROC_MixerPlayMusic},
+   {"math_rotatevel", LUAPROC_MathRotateVel},
+   {"math_anglebetween", LUAPROC_MathAngleBetween},
+   {"math_getcenter", LUAPROC_MathCenterOfRect},
    {NULL, NULL}  /* sentinel */
 };
 extern _declspec(dllexport) int dll_main(lua_State*);

@@ -2,89 +2,92 @@ lua_graph = require("luagraph_loader")
 local window_handle, window_error = lua_graph.open_window("workpls",800,800);
 local render_handle, render_error, a, b, loc = lua_graph.create_renderer(window_handle)
 
---local window_handle2 = lua_graph.open_window("test",800,800);
---local render_handle2 = lua_graph.create_renderer(window_handle2)
 
---print(render_error .. a .. b .. window_error .. loc)
+function add_bullet(point, vel, inangle)
+local rect =  {velx=vel.x,vely=vel.y,x=point.x,y=point.y,w=60,h=5, r=1,g=1,b=1, texture=0, angle = inangle}
+bulletlist[#bulletlist + 1] = rect
+end
+function handle_bullets()
+--set up gl buffer
+local glbuffer = {amount=0,texture=0}
+for k,v in pairs(bulletlist) do
+--if out of bounds
+if v.x < -80 or v.x > 880 or v.y < -5 or v.y > 805 then
+bulletlist[k] = bulletlist[k + 1] -- remove this bullet from this list to be collected and use the next bullet instead
+for i = 1, #bulletlist - k do --see how much of the list is left
+bulletlist[k + i] = bulletlist[k + 1 + i] --shift all the elements over 1 to the left
+end
+end-- continue as normal
+v.x = v.x + v.velx * deltatime
+v.y = v.y + v.vely * deltatime
+glbuffer[k] = v
+end
+glbuffer.amount = #bulletlist
+lua_graph.change_glbuffersize(#bulletlist + 1)
+lua_graph.set_glbuffer(glbuffer)
+lua_graph.draw_glbuffer()
+end
 
-santa_hat = lua_graph.load_texture("awoofa.png")
-werid = lua_graph.load_texture("awooga.png")
-tabletest = {x=0,y=0,w=100,h=100, r=1,g=0,b=1,angle=0}
-tabletest2 = {x=200,y=0,w=100,h=100, r=1,g=0,b=0,angle=0}
-tabletest3 = {x=0,y=150,w=100,h=100, r=1,g=0,b=0,angle=0}
-tabletest4 = {x=0,y=300,w=100,h=100, r=1,g=1,b=1, texture=santa_hat, angle = 45}
-tabletest5 = {x=0, y=500,w=50,h=50,r=1,g=1,b=0,angle=0}
-tabletest6 = {x=400, y=300,w=100,h=100,r=1,g=0,b=1,angle=0}
-tabletest7 = {x=600, y=300,w=100,h=100,r=1,g=1,b=1,angle=0}
-tabletest8 = {x=700, y=150,w=100,h=100,r=0,g=0,b=1,angle=0}
-
+--set up stuff
 font = lua_graph.load_font("arial.ttf")
-fonttexture = lua_graph.generate_fonttexture(font, "Mya is stupid")
-tabletest9 = {x=400, y=150,w=200,h=100,r=1,g=0,b=0,texture=fonttexture, angle = 0}
-tabletable = {amount=7, texture=0, tabletest, tabletest2, tabletest3, tabletest5, tabletest6, tabletest7, tabletest8}
+lua_graph.change_backgroundcolor(1,0,0)
+--set up audio
+lua_graph.audio_init(256)
+gunshot = lua_graph.audio_createchunk("gunshot.wav", 4)
+--set up images
+playerpic = lua_graph.load_texture("player.png")
 
-lua_graph.set_glbuffer(tabletable)
-lua_graph.change_backgroundcolor(0,0,0)
-lua_graph.open_physics(0,0)
-bodyhandle = lua_graph.physics_addbody("static", tabletest4)
-
-lua_graph.audio_init(16)
-testaudio = lua_graph.audio_createchunk("overtime_bell.wav", 32)
-lua_graph.audio_playchunk(testaudio, 0)
+deltatime = 1
+player = {x=0,y=300,w=120,h=120, r=1,g=1,b=1, texture=playerpic, angle = 0}
+bulletlist = {}
+lastframemouse = false
 while true do
-	lua_graph.physics_timestep(60)
-	x, y = lua_graph.physics_getbodypos(bodyhandle)
-	print(x)
+	start = os.clock()
     keytable, mouse, close = lua_graph.handle_windowevents(window_handle)
 	if close then
 	return;
 	end
+	--player.x = player.x + import.x;
+	--player.y = player.y + import.y;
 	sprintmult = 1
 	if keytable.lshift then
 	sprintmult = 2
 	end
 	if keytable.d then
-	tabletest4.x = tabletest4.x + 0.1 * sprintmult
+	player.x = player.x + (100 * sprintmult) * deltatime
 	end
 	if keytable.a then
-	tabletest4.x = tabletest4.x - 0.1 * sprintmult
+	player.x = player.x - (100* sprintmult) * deltatime
 	end
 	if keytable.w then
-	tabletest4.y = tabletest4.y - 0.1 * sprintmult
+	player.y = player.y - (100 * sprintmult) * deltatime
 	end
 	if keytable.s then
-	tabletest4.y = tabletest4.y + 0.1 * sprintmult
+	player.y = player.y + (100 * sprintmult) * deltatime
 	end
-	if keytable.t then
-	tabletest4.angle = tabletest4.angle + 0.1
-	end
-	if keytable.y then
-	tabletest9.angle = tabletest9.angle + 0.1
-	end
-	if mouse.left then
-	tabletest.angle = tabletest.angle + (math.random(1,4) / 10)
-	tabletest2.angle = tabletest2.angle + (math.random(1,4) / 10)
-	tabletest3.angle = tabletest3.angle + (math.random(1,4) / 10)
-	tabletest5.angle = tabletest5.angle + (math.random(1,4) / 10)
-	tabletest6.angle = tabletest6.angle + (math.random(1,4) / 10)
-	tabletest7.angle = tabletest7.angle + (math.random(1,4) / 10)
-	tabletest8.angle = tabletest8.angle + (math.random(1,4) / 10)
-	lua_graph.set_glbuffer(tabletable)
-	end
-	if mouse.right then
-	tabletest.angle = tabletest.angle + (math.random(1,4) / -10)
-	tabletest2.angle = tabletest2.angle + (math.random(1,4) / -10)
-	tabletest3.angle = tabletest3.angle + (math.random(1,4) / -10)
-	tabletest5.angle = tabletest5.angle + (math.random(1,4) / -10)
-	tabletest6.angle = tabletest6.angle + (math.random(1,4) / -10)
-	tabletest7.angle = tabletest7.angle + (math.random(1,4) / -10)
-	tabletest8.angle = tabletest8.angle + (math.random(1,4) / -10)
-	lua_graph.set_glbuffer(tabletable)
+	--do this so the player always looks at the mouse
+	local player_center = lua_graph.math_getcenter(player)
+	player.angle = lua_graph.math_anglebetween(player_center, mouse)
+	if mouse.left and lastframemouse == false then
+	lua_graph.audio_playchunk(gunshot,0)
+	local tmp_point = lua_graph.math_getcenter(player)
+	local tmp_vel = {x=2000,y=0}
+	local angle = lua_graph.math_anglebetween(tmp_point, mouse)
+    local tmp_outputvel = lua_graph.math_rotatevel(tmp_vel, angle)
+	tmp_point.x = tmp_point.x - 30
+	tmp_point.y = tmp_point.y - 2.5
+	add_bullet(tmp_point,tmp_outputvel,angle)
 	end
 	lua_graph.clear_window()
-    lua_graph.draw_glbuffer()
-	lua_graph.draw_quadfast(tabletest4)
-	lua_graph.draw_quadfast(tabletest9)
+	handle_bullets()
+	lua_graph.draw_quadfast(player)
 	lua_graph.update_window(window_handle)
+
+	deltatime = start - os.clock()
+	if deltatime == 0 then
+	deltatime = 0.001
+	end
+	print(#bulletlist)
+	lastframemouse = mouse.left
 end
 

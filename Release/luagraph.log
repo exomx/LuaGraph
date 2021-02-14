@@ -85,10 +85,16 @@ C:\Users\Light\source\repos\luagraph\main.c(426,1): warning C4244: 'initializing
 C:\Users\Light\source\repos\luagraph\main.c(427,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(433,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(434,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(442,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(445,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(462,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(463,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(465,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(476,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
      Creating library C:\Users\Light\source\repos\luagraph\Release\luagraph.lib and object C:\Users\Light\source\repos\luagraph\Release\luagraph.exp
   Generating code
-  1 of 651 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+  2 of 654 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    3 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   luagraph.vcxproj -> C:\Users\Light\source\repos\luagraph\Release\luagraph.dll
