@@ -119,15 +119,57 @@ static int LUAPROC_DrawQuadFly(lua_State* L) { //fly meaning "on the fly"
     lua_getfield(L, 1, "b");
     lua_getfield(L, 1, "texture");
     lua_getfield(L, 1, "angle");
-    double x = luaL_checknumber(L, -9), y = luaL_checknumber(L, -8), w = luaL_checknumber(L, -7), h = luaL_checknumber(L, -6), r = luaL_checknumber(L, -5);
-    double g = luaL_checknumber(L, -4), b = luaL_checknumber(L, -3);
+    float x = luaL_checknumber(L, -9), y = luaL_checknumber(L, -8), w = luaL_checknumber(L, -7), h = luaL_checknumber(L, -6), r = luaL_checknumber(L, -5);
+    float g = luaL_checknumber(L, -4), b = luaL_checknumber(L, -3);
     GLint texture_id = luaL_checknumber(L, -2);
-    double angle = luaL_checknumber(L, -1);
+    float angle = luaL_checknumber(L, -1);
     if (texture_id)
         glBindTexture(GL_TEXTURE_2D, texture_id);
     else
         glBindTexture(GL_TEXTURE_2D, null_tex);
     float tmp_vertexes[28] = { x,y + h, r, g, b, 0, 1, x,y, r, g, b, 0, 0, x + w, y, r, g, b, 1, 0, x + w,y + h, r, g, b, 1, 1 }; //create correct points for quad
+    float* center_points = INTERNAL_GetCenterRect(x, y, w, h);
+    INTERNAL_RotateRectPoints(center_points, tmp_vertexes, angle);
+    glBufferSubData(GL_ARRAY_BUFFER, NULL, sizeof(float) * 28, tmp_vertexes); //the first spot is reserved for this function call
+    glDrawArrays(GL_QUADS, 0, 4);
+    int error = glGetError();
+    lua_pushnumber(L, error);
+    return 1;
+}
+static int LUAPROC_DrawQuadFlyST(lua_State* L) { //fly meaning "on the fly"
+    lua_settop(L, -1);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    lua_getfield(L, 1, "x");
+    lua_getfield(L, 1, "y");
+    lua_getfield(L, 1, "w");
+    lua_getfield(L, 1, "h");
+    lua_getfield(L, 1, "r");
+    lua_getfield(L, 1, "g");
+    lua_getfield(L, 1, "b");
+    lua_getfield(L, 1, "texture");
+    lua_getfield(L, 1, "angle");
+    //for the second rect-table
+    lua_getfield(L, 2, "x");
+    lua_getfield(L, 2, "y");
+    lua_getfield(L, 2, "w");
+    lua_getfield(L, 2, "h");
+    lua_getfield(L, 2, "tw");
+    lua_getfield(L, 2, "th");
+    float x = luaL_checknumber(L, 3), y = luaL_checknumber(L, 4), w = luaL_checknumber(L, 5), h = luaL_checknumber(L, 6), r = luaL_checknumber(L, 7);
+    float g = luaL_checknumber(L, 8), b = luaL_checknumber(L, 9);
+    GLint texture_id = luaL_checknumber(L, 10);
+    float angle = luaL_checknumber(L, 11);
+    float tx = luaL_checknumber(L, 12), ty = luaL_checknumber(L, 13), tw = luaL_checknumber(L, 14), th = luaL_checknumber(L, 15), texturew = luaL_checknumber(L, 16), textureh = luaL_checknumber(L, 17);
+
+    if (texture_id)
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+    else
+        glBindTexture(GL_TEXTURE_2D, null_tex);
+
+    //normalize texture coords
+    tx /= texturew, ty /= textureh, tw /= texturew, th /= textureh;
+    float tmp_vertexes[28] = { x,y + h, r, g, b, tx, ty, x,y, r, g, b, tx + tw, ty, x + w, y, r, g, b, tx + tw, ty + th, x + w,y + h, r, g, b, tx, ty + th }; //create correct points for quad
     float* center_points = INTERNAL_GetCenterRect(x, y, w, h);
     INTERNAL_RotateRectPoints(center_points, tmp_vertexes, angle);
     glBufferSubData(GL_ARRAY_BUFFER, NULL, sizeof(float) * 28, tmp_vertexes); //the first spot is reserved for this function call
@@ -288,9 +330,12 @@ static int LUAPROC_LoadTexture(lua_State* L) { //loads texture into an opengl te
        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmp_surface->w, tmp_surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp_surface->pixels); //makes copy so we are set to free the surface
     else
        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tmp_surface->w, tmp_surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tmp_surface->pixels); //makes copy so we are set to free the surface
-    SDL_FreeSurface(tmp_surface);
+
     lua_pushnumber(L, tmp_tex); //return texture handle
-    return 1;
+    lua_pushnumber(L, tmp_surface->w);
+    lua_pushnumber(L, tmp_surface->h);
+    SDL_FreeSurface(tmp_surface);
+    return 3;
 }
 //font stuff
 static int LUAPROC_LoadFont(lua_State* L) { //loads a font onto the virtual read-only font table
@@ -540,6 +585,7 @@ static const struct luaL_reg libprocs[] = {
    {"clear_window", LUAPROC_ClearWindow},
    {"change_backgroundcolor", LUAPROC_ChangeBackgroundColor},
    {"draw_quadfast", LUAPROC_DrawQuadFly},
+   {"draw_quadfastsheet", LUAPROC_DrawQuadFlyST},
    {"set_glbuffer", LUAPROC_SetDrawBuffer},
    {"draw_glbuffer", LUAPROC_DrawCallBuffer},
    {"update_window", LUAPROC_UpdateWindow},
