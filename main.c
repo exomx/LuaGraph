@@ -169,7 +169,7 @@ static int LUAPROC_DrawQuadFlyST(lua_State* L) { //fly meaning "on the fly"
 
     //normalize texture coords
     tx /= texturew, ty /= textureh, tw /= texturew, th /= textureh;
-    float tmp_vertexes[28] = { x,y + h, r, g, b, tx, ty, x,y, r, g, b, tx + tw, ty, x + w, y, r, g, b, tx + tw, ty + th, x + w,y + h, r, g, b, tx, ty + th }; //create correct points for quad
+    float tmp_vertexes[28] = { x,y + h, r, g, b, tx, ty + th, x,y, r, g, b, tx, ty, x + w, y, r, g, b, tx + tw, ty, x + w,y + h, r, g, b, tx + tw, ty + th }; //create correct points for quad
     float* center_points = INTERNAL_GetCenterRect(x, y, w, h);
     INTERNAL_RotateRectPoints(center_points, tmp_vertexes, angle);
     glBufferSubData(GL_ARRAY_BUFFER, NULL, sizeof(float) * 28, tmp_vertexes); //the first spot is reserved for this function call

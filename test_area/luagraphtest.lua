@@ -12,7 +12,7 @@ gunshot = lua_graph.audio_createchunk("gunshot.wav", 16)
 playerpic, twa, tha = lua_graph.load_texture("character_1.png")
 deltatime = 1
 cool = {x=0,y=0,w=twa,h=tha,tw=twa,th=tha}
-player = {x=0,y=0,w=120,h=120, r=1,g=1,b=1, texture=playerpic, angle = 90}
+player = {x=0,y=0,w=120,h=120, r=1,g=1,b=1, texture=playerpic, angle = 0}
 line = {x=200,y=380,w=300,h=120,r=0.2,g=0.2,b=1,texture=0,angle = 0}
 
 bulletlist = {}
