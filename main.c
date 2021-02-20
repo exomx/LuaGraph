@@ -175,6 +175,7 @@ static int LUAPROC_SetDrawBuffer(lua_State* L) {
         INTERNAL_RotateRectPoints(center_points, offsetp, angle);
     }
     glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 28, sizeof(float) * gl_array_buffer_size, tmp_vertexes);
+    free(tmp_vertexes);
     lua_pushnumber(L, glGetError());
     return 1;
 }
@@ -326,7 +327,7 @@ static int LUAPROC_CloseWindow(lua_State* L) {
     //roflcopter, this does nothing lmosa
     return 1;
 }
-static int LUAPROC_OpenChipmunk(lua_State* L) {
+static int LUAPROC_CreateChipmunkSpace(lua_State* L) {
     lua_settop(L, -1);
     float gravx = luaL_checknumber(L, 1);
     float gravy = luaL_checknumber(L, 2);
@@ -335,49 +336,100 @@ static int LUAPROC_OpenChipmunk(lua_State* L) {
     cpSpaceSetGravity(space, gravity);
     return 0;
 }
-static int LUAPROC_CAddBody(lua_State* L) {
+static int LUAPROC_EditChipmunkSpace(lua_State* L) {
     lua_settop(L, -1);
-    cpBodyType actual_type;
-    const char* type = luaL_checkstring(L, 1);
+    float gravx = luaL_checknumber(L, 1);
+    float gravy = luaL_checknumber(L, 2);
+    cpVect gravity = cpv(gravx, gravy);
+    cpSpaceSetGravity(space, gravity);
+    return 0;
+}
+static int LUAPROC_ChipmunkAddBody(lua_State* L) {
+    lua_settop(L, -1);
+    luaL_checktype(L, 1, LUA_TTABLE);
     luaL_checktype(L, 2, LUA_TTABLE);
-    lua_getfield(L, 2, "x");
-    lua_getfield(L, 2, "y");
-    lua_getfield(L, 2, "w");
-    lua_getfield(L, 2, "h");
-    float x = lua_tonumber(L, -4), y = lua_tonumber(L, -3), w = lua_tonumber(L, -2), h = lua_tonumber(L, -1);
-    cpVect body_pos = cpv(x, y);
-    if (strcmp(type, "dynamic"))
-        actual_type = CP_BODY_TYPE_DYNAMIC;
-    else if (strcmp(type, "kinematic"))
+    lua_getfield(L, 1, "x"), lua_getfield(L, 1, "y"), lua_getfield(L, 1, "w"), lua_getfield(L, 1, "h"), lua_getfield(L, 1, "angle");
+    lua_getfield(L, 2, "mass"), lua_getfield(L, 2, "velocity"), lua_getfield(L, 2, "friction"), lua_getfield(L, 2, "body_type");
+    float x = luaL_checknumber(L, 3), y = luaL_checknumber(L, 4), w = luaL_checknumber(L, 5), h = luaL_checknumber(L, 6), angle = luaL_checknumber(L, 7);
+    float mass = luaL_checknumber(L, 8), velocity = luaL_checknumber(L, 9), friction = luaL_checknumber(L, 10);
+    float radians = angle * (3.141592 / 180);
+    char* type = luaL_checkstring(L, 11);
+    cpBodyType actual_type = CP_BODY_TYPE_DYNAMIC;
+    float momentum = cpMomentForBox(mass, w, h);
+    cpBody* tmp_body = cpSpaceAddBody(space, cpBodyNew(mass, momentum));
+    cpBodySetPosition(tmp_body, cpv(x + w/2,y + h/2));
+    cpVect* size = calloc(1, sizeof(cpVect));
+    size->x = w, size->y = h;
+    cpBodySetUserData(tmp_body, size);
+    cpBodySetAngle(tmp_body, radians);
+    //convert type to actual type
+    if (type[0] == 'k')
         actual_type = CP_BODY_TYPE_KINEMATIC;
-    else if (strcmp(type, "static"))
+    else if(type[0] == 's')
         actual_type = CP_BODY_TYPE_STATIC;
-
-    cpBody* tmp_body = cpBodyNew(1000, 0); //we only care about returning the body since that will be used the most and we can get the shape from the body at anytime
-    cpBodySetType(tmp_body, actual_type);
-    cpShape* tmp_shape = cpBoxShapeNew(tmp_body, w, h, w / 2);
-    cpShapeSetFriction(tmp_shape, 1);
-    cpSpaceAddBody(space, tmp_body);
-    cpSpaceAddShape(space, tmp_shape);
+    free(type);
+    if(actual_type != CP_BODY_TYPE_DYNAMIC)
+        cpBodySetType(tmp_body, actual_type);
+    cpShape* tmp_shape = cpSpaceAddShape(space, cpBoxShapeNew(tmp_body, w, h, 0));
+    cpShapeSetFriction(tmp_shape, friction);
     LIST_AddElement(&cbody, tmp_body);
-    lua_pushnumber(L, ((double)cbody.count) - 1);
+    lua_pushnumber(L, (double)cbody.count - 1);
     return 1;
 }
-static int LUAPROC_CTimeStep(lua_State* L) {
+static int LUAPROC_ChipmunkBodySetVelocty(lua_State* L) {
     lua_settop(L, -1);
-    float frame_rate = luaL_checknumber(L, 1);
-    float timestep = 1 / frame_rate;
+    int body_handle = luaL_checknumber(L, 1);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    lua_getfield(L, 2, "x"), lua_getfield(L, 2, "y");
+    float x = luaL_checknumber(L, 3), y = luaL_checknumber(L, 4);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodySetVelocity(tmp_body, cpv(x, y));
+    return 0;
+}
+static int LUAPROC_ChipmunkTimeStep(lua_State* L) {
+    lua_settop(L, -1);
+    double frame_rate = luaL_checknumber(L, 1);
+    double timestep = 1.0 / frame_rate;
     cpSpaceStep(space, timestep);
     return 0;
 }
-static int LUAPROC_CGetBodyPos(lua_State* L) {
+static int LUAPROC_ChipmunkGetBodyInfo(lua_State* L) {
     lua_settop(L, -1);
     float body_handle = luaL_checknumber(L, 1);
     cpBody* tmp_body = LIST_At(&cbody, body_handle);
     cpVect pos = cpBodyGetPosition(tmp_body);
-    lua_pushnumber(L, pos.x);
-    lua_pushnumber(L, pos.y);
-    return 2;
+    cpVect vel = cpBodyGetVelocity(tmp_body);
+    cpVect* size = cpBodyGetUserData(tmp_body);
+    float radians = cpBodyGetAngle(tmp_body);
+    float angle = radians * (180 / 3.141592);
+    lua_createtable(L, 0, 5);
+    lua_pushnumber(L, pos.x - size->x / 2);
+    lua_setfield(L, 2, "x");
+    lua_pushnumber(L, pos.y - size->y / 2);
+    lua_setfield(L, 2, "y");
+    lua_pushnumber(L, vel .x);
+    lua_setfield(L, 2, "velx");
+    lua_pushnumber(L, vel.y);
+    lua_setfield(L, 2, "vely");
+    lua_pushnumber(L, angle);
+    lua_setfield(L, 2, "angle");
+
+    return 1;
+}
+//TODO: FIX THIS LATER
+static int LUAPROC_ChipmunkQuickIntersectCheck(lua_State* L) {
+    lua_settop(L, -1);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    lua_getfield(L, 1, "x"), lua_getfield(L, 1, "y"), lua_getfield(L, 1, "w"), lua_getfield(L, 1, "h");
+    lua_getfield(L, 2, "x"), lua_getfield(L, 2, "y"), lua_getfield(L, 2, "w"), lua_getfield(L, 2, "h");
+    float x1 = luaL_checknumber(L, 3), y1 = luaL_checknumber(L, 4), w1 = luaL_checknumber(L, 5), h1 = luaL_checknumber(L, 6);
+    float x2 = luaL_checknumber(L, 7), y2 = luaL_checknumber(L, 8), w2 = luaL_checknumber(L, 9), h2 = luaL_checknumber(L, 10);
+    cpBB box1 = cpBBNew(x1, (double)y1 + h1, (double)x1 + w1, y1);
+    cpBB box2 = cpBBNew(x2, (double)y2 + h2, (double)x2 + w2, y2);
+    int intersect = cpBBIntersects(box1, box2);
+    lua_pushboolean(L, intersect);
+    return 1;
 }
 //Audio/mixer functions
 static int LUAPROC_MixerInit(lua_State* L) {
@@ -496,10 +548,13 @@ static const struct luaL_reg libprocs[] = {
    {"load_font", LUAPROC_LoadFont},
    {"generate_fonttexture", LUAPROC_RenderFontFast},
    {"handle_windowevents", LUAPROC_HandleWindowEvents},
-   {"open_physics", LUAPROC_OpenChipmunk},
-   {"physics_addbody", LUAPROC_CAddBody},
-   {"physics_timestep", LUAPROC_CTimeStep},
-   {"physics_getbodypos", LUAPROC_CGetBodyPos},
+   {"physics_createspace", LUAPROC_CreateChipmunkSpace},
+   {"physics_editspace", LUAPROC_EditChipmunkSpace},
+   {"physics_addbody", LUAPROC_ChipmunkAddBody},
+   {"physics_timestep", LUAPROC_ChipmunkTimeStep},
+   {"physics_getbody", LUAPROC_ChipmunkGetBodyInfo},
+   {"physics_setvel", LUAPROC_ChipmunkBodySetVelocty},
+   {"quickphy_rectintersects", LUAPROC_ChipmunkQuickIntersectCheck},
    {"audio_init", LUAPROC_MixerInit},
    {"audio_createchunk", LUAPROC_MixerCreateChunk},
    {"audio_volumechunk", LUAPROC_MixerVolumeChunk},
