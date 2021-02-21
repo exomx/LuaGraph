@@ -17,183 +17,192 @@ C:\Users\Light\source\repos\luagraph\include\cglm\util.h(130,27): warning C4142:
 C:\Users\Light\source\repos\luagraph\include\cglm\util.h(144,27): warning C4142: 'glm_max': benign redefinition of type
 C:\Users\Light\source\repos\luagraph\include\cglm\util.h(159,50): warning C4142: 'glm_clamp': benign redefinition of type
 C:\Users\Light\source\repos\luagraph\include\cglm\util.h(170,25): warning C4142: 'glm_clamp_zo': benign redefinition of type
-C:\Users\Light\source\repos\luagraph\main.c(31,64): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(31,67): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(32,43): warning C4090: '=': different 'const' qualifiers
-C:\Users\Light\source\repos\luagraph\main.c(44,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(53,64): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(80,45): warning C4047: 'function': 'const GLfloat *' differs in levels of indirection from 'mat4'
-C:\Users\Light\source\repos\luagraph\main.c(80,40): warning C4024: 'glad_glUniformMatrix4fv': different types for formal and actual parameter 4
-C:\Users\Light\source\repos\luagraph\main.c(90,86): warning C4022: 'glad_glVertexAttribPointer': pointer mismatch for actual parameter 6
-C:\Users\Light\source\repos\luagraph\main.c(91,86): warning C4022: 'glad_glVertexAttribPointer': pointer mismatch for actual parameter 6
-C:\Users\Light\source\repos\luagraph\main.c(116,19): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(116,22): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(116,25): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(126,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\luagraph\main.c(126,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\luagraph\main.c(123,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(153,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\luagraph\main.c(153,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\luagraph\main.c(142,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(143,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(144,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'GLint', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(145,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(195,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\luagraph\main.c(195,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\luagraph\main.c(179,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(180,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(181,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'GLint', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(182,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(183,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(203,54): warning C4244: '=': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(214,38): warning C4244: '=': conversion from 'lua_Number' to 'GLint', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(215,48): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(231,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(231,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(231,97): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(231,126): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(231,156): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(232,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(232,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(232,97): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(232,128): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(232,159): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(233,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(233,73): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(233,104): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(233,135): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(233,166): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(234,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(234,77): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(234,108): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(234,139): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(234,170): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(235,56): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(235,59): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(235,62): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(235,65): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(237,64): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(263,57): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(268,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(339,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(340,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(378,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'GLint', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(397,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(405,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(423,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(424,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(432,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(433,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(434,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(456,46): warning C4244: '=': conversion from 'cpFloat' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(458,64): warning C4244: '=': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(44,64): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(44,67): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(45,43): warning C4090: '=': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\main.c(57,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(66,64): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(93,45): warning C4047: 'function': 'const GLfloat *' differs in levels of indirection from 'mat4'
+C:\Users\Light\source\repos\luagraph\main.c(93,40): warning C4024: 'glad_glUniformMatrix4fv': different types for formal and actual parameter 4
+C:\Users\Light\source\repos\luagraph\main.c(103,86): warning C4022: 'glad_glVertexAttribPointer': pointer mismatch for actual parameter 6
+C:\Users\Light\source\repos\luagraph\main.c(104,86): warning C4022: 'glad_glVertexAttribPointer': pointer mismatch for actual parameter 6
+C:\Users\Light\source\repos\luagraph\main.c(129,19): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(129,22): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(129,25): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(139,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\luagraph\main.c(139,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\luagraph\main.c(136,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(166,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\luagraph\main.c(166,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\luagraph\main.c(155,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(156,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(157,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(158,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(208,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\luagraph\main.c(208,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\luagraph\main.c(192,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(193,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(194,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(195,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(196,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(216,54): warning C4244: '=': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(227,38): warning C4244: '=': conversion from 'lua_Number' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(228,48): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(244,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(244,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(244,97): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(244,126): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(244,156): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(245,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(245,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(245,97): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(245,128): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(245,159): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(246,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(246,73): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(246,104): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(246,135): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(246,166): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(247,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(247,77): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(247,108): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(247,139): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(247,170): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(248,56): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(248,59): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(248,62): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(248,65): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(250,64): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(276,57): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(281,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(352,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(353,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(391,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(410,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(418,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(436,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(437,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(445,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(446,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(447,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(448,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(451,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(452,1): warning C4090: 'initializing': different 'const' qualifiers
-C:\Users\Light\source\repos\luagraph\main.c(488,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(500,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(501,1): warning C4090: 'initializing': different 'const' qualifiers
-C:\Users\Light\source\repos\luagraph\main.c(513,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(514,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'cpCollisionType', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(521,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(524,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(469,46): warning C4244: '=': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(471,64): warning C4244: '=': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(459,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(460,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(461,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(464,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(465,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\main.c(504,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(518,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(519,1): warning C4090: 'initializing': different 'const' qualifiers
 C:\Users\Light\source\repos\luagraph\main.c(531,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(532,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(532,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'cpCollisionType', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(539,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(540,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(547,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(548,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(555,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(563,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(564,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(542,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(549,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(550,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(557,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(558,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(565,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(566,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(574,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(566,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(573,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(581,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(582,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(583,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(584,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(591,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(592,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(596,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(605,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(606,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(607,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(608,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(612,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(621,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(622,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(625,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(634,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(635,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(640,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(649,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(650,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(653,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(655,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(664,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(665,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(668,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(670,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(679,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(680,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(681,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(682,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(691,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(692,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(693,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(592,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(593,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(600,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(601,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(602,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(603,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(611,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(618,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(619,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(620,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(628,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(629,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(633,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(642,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(643,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(644,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(645,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(649,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(658,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(659,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(662,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(671,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(672,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(677,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(686,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(687,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(690,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(692,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(701,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
 C:\Users\Light\source\repos\luagraph\main.c(702,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(703,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(704,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(713,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(714,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(715,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(724,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(737,45): warning C4133: 'function': incompatible types - from 'lua_State *' to 'const linkedList *const '
-C:\Users\Light\source\repos\luagraph\main.c(735,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(743,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(745,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(746,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(756,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(757,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(766,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(767,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(775,1): warning C4090: 'initializing': different 'const' qualifiers
-C:\Users\Light\source\repos\luagraph\main.c(787,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(795,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(797,1): warning C4090: 'initializing': different 'const' qualifiers
-C:\Users\Light\source\repos\luagraph\main.c(800,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(810,1): warning C4090: 'initializing': different 'const' qualifiers
-C:\Users\Light\source\repos\luagraph\main.c(823,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(824,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(831,51): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(830,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(836,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(837,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(838,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(861,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(870,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(879,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(887,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(888,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(895,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(904,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(912,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(918,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(919,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(925,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(926,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(934,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(937,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(954,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(955,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(957,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\main.c(968,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(705,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(707,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(716,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(717,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(718,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(719,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(728,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(729,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(730,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(739,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(740,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(741,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(750,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(751,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(752,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(761,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(774,45): warning C4133: 'function': incompatible types - from 'lua_State *' to 'const linkedList *const '
+C:\Users\Light\source\repos\luagraph\main.c(772,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(780,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(782,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(783,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(793,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(794,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(802,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(803,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(818,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(819,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(834,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(835,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(850,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(851,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(866,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\main.c(878,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(886,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(888,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\main.c(897,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(898,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(905,51): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(904,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(910,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(911,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(912,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(935,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(944,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(953,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(961,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(962,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(969,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(978,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(986,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(992,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(993,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(999,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(1000,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(1008,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(1011,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(1028,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(1029,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(1031,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(1042,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
      Creating library C:\Users\Light\source\repos\luagraph\Release\luagraph.lib and object C:\Users\Light\source\repos\luagraph\Release\luagraph.exp
   Generating code
-  2 of 978 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    7 functions had inline decision re-evaluated but remain unchanged
+  3 of 986 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+    2 functions were new in current compilation
+    14 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   luagraph.vcxproj -> C:\Users\Light\source\repos\luagraph\Release\luagraph.dll

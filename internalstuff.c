@@ -62,17 +62,6 @@ void INTERNAL_RotateRectPoints(float* center, float* points, float angle) {
 	points[22] = bottomright[1];
 
 }
-cpBool INTERNAL_CollisionBeginFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData) {
-	lua_State* L = userData;
-	lua_settop(L, 0);
-	lua_getglobal(L, "script");
-	lua_pushnumber(L, 10);
-	lua_pushnumber(L, 20);
-	lua_pcall(L, 2, 1, 0);
-	int returnval = lua_toboolean(L, 1);
-	lua_settop(L, 0);
-	return returnval;
-}
 
 //chipmunk iterator stuff
 void INTERNAL_RemoveAllShapesBody(cpBody* body, cpShape* shape, void* data) {
@@ -102,4 +91,215 @@ void INTERNAL_SetSurfaceVelocityAllShapesBody(cpBody* body, cpShape* shape, void
 void INTERNAL_SetCollisionTypeAllShapesBody(cpBody* body, cpShape* shape, void* data) {
 	cpCollisionType* idata = data;
 	cpShapeSetCollisionType(shape, *idata);
+}
+//chipmunk collision detection stuff
+cpBool INTERNAL_CollisionBeginFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData) {
+	luastatearray* lsa = userData;
+	lua_State* L = lsa->state1;
+	lua_settop(L, 0);
+	lua_createtable(L, 0, 5);
+
+	int tmp_count = cpArbiterGetCount(arb);
+	lua_pushnumber(L, tmp_count);
+	lua_setfield(L, 1, "collision_count");
+	cpBody* tmp_bodyA, *tmp_bodyB;
+	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
+	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
+	lua_pushnumber(L, tmp_bodyAVel.x);
+	lua_setfield(L, 1, "collider_velx");
+
+	lua_pushnumber(L, tmp_bodyAVel.y);
+	lua_setfield(L, 1, "collider_vely");
+
+	lua_pushnumber(L, tmp_bodyBVel.x);
+	lua_setfield(L, 1, "collided_velx");
+
+	lua_pushnumber(L, tmp_bodyBVel.y);
+	lua_setfield(L, 1, "collided_vely");
+
+	lua_pushnumber(L, cpBodyGetAngularVelocity(tmp_bodyA));
+	lua_setfield(L, 1, "collider_angularvel");
+
+	lua_pushnumber(L, cpBodyGetAngularVelocity(tmp_bodyB));
+	lua_setfield(L, 1, "collided_angularvel");
+
+	lua_pushnumber(L, cpArbiterGetFriction(arb));
+	lua_setfield(L, 1, "friction");
+
+	cpVect tmp_svel_vec = cpArbiterGetSurfaceVelocity(arb);
+	lua_pushnumber(L, tmp_svel_vec.x);
+	lua_setfield(L, 1, "surface_velocityx");
+	lua_pushnumber(L, tmp_svel_vec.y);
+	lua_setfield(L, 1, "surface_velocity");
+
+	lua_pushnumber(L, cpArbiterIsFirstContact(arb));
+	lua_setfield(L, 1, "firstcontact");
+	lua_setglobal(L, "collision");
+	lua_getglobal(L, "script");
+	lua_pcall(L, 0, 1, 0);
+	int returnval = lua_toboolean(L, 1);
+	lua_settop(L, 0);
+	return returnval;
+}
+
+cpBool INTERNAL_CollisionPreFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData) {
+	luastatearray* lsa = userData;
+	lua_State* L = lsa->state2;
+	lua_settop(L, 0);
+	lua_createtable(L, 0, 5);
+
+	int tmp_count = cpArbiterGetCount(arb);
+	lua_pushnumber(L, tmp_count);
+	lua_setfield(L, 1, "collision_count");
+	cpBody* tmp_bodyA, * tmp_bodyB;
+	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
+	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
+	lua_pushnumber(L, tmp_bodyAVel.x);
+	lua_setfield(L, 1, "collider_velx");
+
+	lua_pushnumber(L, tmp_bodyAVel.y);
+	lua_setfield(L, 1, "collider_vely");
+
+	lua_pushnumber(L, tmp_bodyBVel.x);
+	lua_setfield(L, 1, "collided_velx");
+
+	lua_pushnumber(L, tmp_bodyBVel.y);
+	lua_setfield(L, 1, "collided_vely");
+
+	lua_pushnumber(L, cpBodyGetAngularVelocity(tmp_bodyA));
+	lua_setfield(L, 1, "collider_angularvel");
+
+	lua_pushnumber(L, cpBodyGetAngularVelocity(tmp_bodyB));
+	lua_setfield(L, 1, "collided_angularvel");
+
+	lua_pushnumber(L, cpArbiterGetFriction(arb));
+	lua_setfield(L, 1, "friction");
+	cpVect tmp_svel_vec = cpArbiterGetSurfaceVelocity(arb);
+	lua_pushnumber(L, tmp_svel_vec.x);
+	lua_setfield(L, 1, "surface_velocityx");
+	lua_pushnumber(L, tmp_svel_vec.y);
+	lua_setfield(L, 1, "surface_velocityy");
+
+	lua_pushnumber(L, cpArbiterIsFirstContact(arb));
+	lua_setfield(L, 1, "firstcontact");
+
+	lua_setglobal(L, "collision");
+	lua_getglobal(L, "script");
+	lua_pcall(L, 0, 1, 0);
+
+	int returnval = lua_toboolean(L, 1);
+	lua_settop(L, 0);
+	return returnval;
+}
+void INTERNAL_CollisionPostFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData) {
+	luastatearray* lsa = userData;
+	lua_State* L = lsa->state3;
+	lua_settop(L, 0);
+	lua_createtable(L, 0, 5);
+
+	int tmp_count = cpArbiterGetCount(arb);
+	lua_pushnumber(L, tmp_count);
+	lua_setfield(L, 1, "collision_count");
+	cpBody* tmp_bodyA, * tmp_bodyB;
+	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
+	int* indexa = cpBodyGetUserData(tmp_bodyA), *indexb = cpBodyGetUserData(tmp_bodyB);
+	lua_pushnumber(L, *indexa);
+	lua_setfield(L, 1, "colliderid");
+	lua_pushnumber(L, *indexb);
+	lua_setfield(L, 1, "collidedid");
+	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
+	lua_pushnumber(L, tmp_bodyAVel.x);
+	lua_setfield(L, 1, "collider_velx");
+
+	lua_pushnumber(L, tmp_bodyAVel.y);
+	lua_setfield(L, 1, "collider_vely");
+
+	lua_pushnumber(L, tmp_bodyBVel.x);
+	lua_setfield(L, 1, "collided_velx");
+
+	lua_pushnumber(L, tmp_bodyBVel.y);
+	lua_setfield(L, 1, "collided_vely");
+
+	lua_pushnumber(L, cpBodyGetAngularVelocity(tmp_bodyA));
+	lua_setfield(L, 1, "collider_angularvel");
+
+	lua_pushnumber(L, cpBodyGetAngularVelocity(tmp_bodyB));
+	lua_setfield(L, 1, "collided_angularvel");
+
+	lua_pushnumber(L, cpArbiterGetFriction(arb));
+	lua_setfield(L, 1, "friction");
+	cpVect tmp_svel_vec = cpArbiterGetSurfaceVelocity(arb);
+	lua_pushnumber(L, tmp_svel_vec.x);
+	lua_setfield(L, 1, "surface_velocityx");
+	lua_pushnumber(L, tmp_svel_vec.y);
+	lua_setfield(L, 1, "surface_velocityy");
+
+	lua_pushnumber(L, cpArbiterIsFirstContact(arb));
+	lua_setfield(L, 1, "firstcontact");
+	cpVect tmp_impulse_vec = cpArbiterTotalImpulse(arb);
+	lua_pushnumber(L, tmp_impulse_vec.x);
+	lua_setfield(L, 1, "impusex");
+	lua_pushnumber(L, tmp_impulse_vec.y);
+	lua_setfield(L, 1, "impusey");
+	
+	lua_setglobal(L, "collision");
+	lua_getglobal(L, "script");
+	lua_pcall(L, 0, 0, 0);
+}
+void INTERNAL_CollisionSeperateFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData) {
+	luastatearray* lsa = userData;
+	lua_State* L = lsa->state4;
+	lua_settop(L, 0);
+	lua_createtable(L, 0, 5);
+
+	int tmp_count = cpArbiterGetCount(arb);
+	lua_pushnumber(L, tmp_count);
+	lua_setfield(L, 1, "collision_count");
+	cpBody* tmp_bodyA, * tmp_bodyB;
+	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
+	int* indexa = cpBodyGetUserData(tmp_bodyA), * indexb = cpBodyGetUserData(tmp_bodyB);
+	lua_pushnumber(L, *indexa);
+	lua_setfield(L, 1, "colliderid");
+	lua_pushnumber(L, *indexb);
+	lua_setfield(L, 1, "collidedid");
+	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
+	lua_pushnumber(L, tmp_bodyAVel.x);
+	lua_setfield(L, 1, "collider_velx");
+
+	lua_pushnumber(L, tmp_bodyAVel.y);
+	lua_setfield(L, 1, "collider_vely");
+
+	lua_pushnumber(L, tmp_bodyBVel.x);
+	lua_setfield(L, 1, "collided_velx");
+
+	lua_pushnumber(L, tmp_bodyBVel.y);
+	lua_setfield(L, 1, "collided_vely");
+
+	lua_pushnumber(L, cpBodyGetAngularVelocity(tmp_bodyA));
+	lua_setfield(L, 1, "collider_angularvel");
+
+	lua_pushnumber(L, cpBodyGetAngularVelocity(tmp_bodyB));
+	lua_setfield(L, 1, "collided_angularvel");
+
+	lua_pushnumber(L, cpArbiterGetFriction(arb));
+	lua_setfield(L, 1, "friction");
+	cpVect tmp_svel_vec = cpArbiterGetSurfaceVelocity(arb);
+	lua_pushnumber(L, tmp_svel_vec.x);
+	lua_setfield(L, 1, "surface_velocityx");
+	lua_pushnumber(L, tmp_svel_vec.y);
+	lua_setfield(L, 1, "surface_velocityy");
+
+	lua_pushnumber(L, cpArbiterIsFirstContact(arb));
+	lua_setfield(L, 1, "firstcontact");
+	cpVect tmp_impulse_vec = cpArbiterTotalImpulse(arb);
+	lua_pushnumber(L, tmp_impulse_vec.x);
+	lua_setfield(L, 1, "impusex");
+	lua_pushnumber(L, tmp_impulse_vec.y);
+	lua_setfield(L, 1, "impusey");
+
+	lua_pushboolean(L, cpArbiterIsRemoval(arb));
+	lua_setfield(L, 1, "removal");
+	lua_setglobal(L, "collision");
+	lua_getglobal(L, "script");
+	lua_pcall(L, 0, 0, 0);
 }

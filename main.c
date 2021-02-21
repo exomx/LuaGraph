@@ -13,6 +13,19 @@ linkedList lua_statelist;
 linkedList chunklists;
 linkedList musiclists;
 GLint default_shaders;
+//needs to be defined here
+void INTERNAL_RemoveBodyFunc(int body_handle) {
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    if (tmp_body) {
+        int* index = cpBodyGetUserData(tmp_body);
+        free(index);
+        cpBodyEachShape(tmp_body, INTERNAL_RemoveAllShapesBody, NULL);
+        cpSpaceRemoveBody(space, tmp_body);
+        cpBodyFree(tmp_body);
+    }
+    LIST_EmptyAt(&cbody, body_handle);
+
+}
 //ew globals
 SDL_Color white = { 255,255,255 };
 GLint tmp_buf, tmp_vao, null_tex, drawbuf_tex; //global gl context stuff, might make it so lua can only have one context and one window, not sure
@@ -457,6 +470,9 @@ static int LUAPROC_ChipmunkAddBody(lua_State* L) {
     else
         momentum = cpMomentForCircle(mass, 0, w / 2, cpv(0, 0));
     cpBody* tmp_body = cpSpaceAddBody(space, cpBodyNew(mass, momentum));
+    int* index = calloc(1, sizeof(int));
+    *index = cbody.count - 1;
+    cpBodySetUserData(tmp_body, index);
     cpBodySetPosition(tmp_body, cpv(x + w/2,y + h/2));
     cpVect* size = calloc(1, sizeof(cpVect));
     size->x = w, size->y = h;
@@ -488,6 +504,8 @@ static int LUAPROC_ChipmunkRemoveBody(lua_State* L) {
     int body_handle = luaL_checknumber(L, 1);
     cpBody* tmp_body = LIST_At(&cbody, body_handle);
     if (tmp_body) {
+        int* index = cpBodyGetUserData(tmp_body);
+        free(index);
         cpBodyEachShape(tmp_body, INTERNAL_RemoveAllShapesBody, NULL);
         cpSpaceRemoveBody(space, tmp_body);
         cpBodyFree(tmp_body);
@@ -556,6 +574,25 @@ static int LUAPROC_ChipmunkBodySetSensor(lua_State* L) {
     int sensor = lua_toboolean(L, 2);
     cpBody* tmp_body = LIST_At(&cbody, body_handle);
     cpBodyEachShape(tmp_body, INTERNAL_SetSensorAllShapesBody, &sensor);
+    return 0;
+}
+static int LUAPROC_ChipmunkBodySetPosition(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    lua_getfield(L, 2, "x"), lua_getfield(L, 2, "y");
+    float x = luaL_checknumber(L, 3), y = luaL_checknumber(L, 4);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodySetPosition(tmp_body, cpv(x, y));
+    return 0;
+}
+static int LUAPROC_ChipmunkBodySetAngle(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    float angle = luaL_checknumber(L, 2);
+    float radians = angle * (3.141592 / 180);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodySetAngle(tmp_body, radians);
     return 0;
 }
 static int LUAPROC_ChipmunkSetShapeFilter(lua_State* L) {
@@ -756,7 +793,6 @@ static int LUAPROC_ChipmunkCreateCollisionCallback(lua_State* L) {
     int typea = luaL_checknumber(L, 1);
     int typeb = luaL_checknumber(L, 2);
     cpCollisionHandler* tmp_handler = cpSpaceAddCollisionHandler(space, typea, typeb);
-    tmp_handler->beginFunc = INTERNAL_CollisionBeginFunc;
     LIST_AddElement(&collisioncallbacks, tmp_handler);
     lua_pushnumber(L, (double)collisioncallbacks.count - 1);
     return 1;
@@ -767,7 +803,62 @@ static int LUAPROC_ChipmunkEditCallbackBeginFunc(lua_State* L) {
     int lua_statehandle = lua_tonumber(L, 2);
     lua_State* tmp_L = LIST_At(&lua_statelist, lua_statehandle);
     cpCollisionHandler* tmp_handler = LIST_At(&collisioncallbacks, callback_handle);
-    tmp_handler->userData = tmp_L;
+    luastatearray* tmp_statearray;
+    if (!tmp_handler->userData)
+        tmp_statearray = calloc(1, sizeof(luastatearray));
+    else
+        tmp_statearray = tmp_handler->userData;
+    tmp_statearray->state1 = tmp_L;
+    tmp_handler->beginFunc = INTERNAL_CollisionBeginFunc;
+    tmp_handler->userData = tmp_statearray;
+    return 0;
+}
+static int LUAPROC_ChipmunkEditCallbackPreFunc(lua_State* L) {
+    lua_settop(L, -1);
+    int callback_handle = luaL_checknumber(L, 1);
+    int lua_statehandle = lua_tonumber(L, 2);
+    lua_State* tmp_L = LIST_At(&lua_statelist, lua_statehandle);
+    cpCollisionHandler* tmp_handler = LIST_At(&collisioncallbacks, callback_handle);
+    luastatearray* tmp_statearray;
+    if (!tmp_handler->userData)
+        tmp_statearray = calloc(1, sizeof(luastatearray));
+    else
+        tmp_statearray = tmp_handler->userData;
+    tmp_statearray->state2 = tmp_L;
+    tmp_handler->preSolveFunc = INTERNAL_CollisionPreFunc;
+    tmp_handler->userData = tmp_statearray;
+    return 0;
+}
+static int LUAPROC_ChipmunkEditCallbackPostFunc(lua_State* L) {
+    lua_settop(L, -1);
+    int callback_handle = luaL_checknumber(L, 1);
+    int lua_statehandle = lua_tonumber(L, 2);
+    lua_State* tmp_L = LIST_At(&lua_statelist, lua_statehandle);
+    cpCollisionHandler* tmp_handler = LIST_At(&collisioncallbacks, callback_handle);
+    luastatearray* tmp_statearray;
+    if (!tmp_handler->userData)
+        tmp_statearray = calloc(1, sizeof(luastatearray));
+    else
+        tmp_statearray = tmp_handler->userData;
+    tmp_statearray->state3 = tmp_L;
+    tmp_handler->postSolveFunc = INTERNAL_CollisionPostFunc;
+    tmp_handler->userData = tmp_statearray;
+    return 0;
+}
+static int LUAPROC_ChipmunkEditCallbackSeperateFunc(lua_State* L) {
+    lua_settop(L, -1);
+    int callback_handle = luaL_checknumber(L, 1);
+    int lua_statehandle = lua_tonumber(L, 2);
+    lua_State* tmp_L = LIST_At(&lua_statelist, lua_statehandle);
+    cpCollisionHandler* tmp_handler = LIST_At(&collisioncallbacks, callback_handle);
+    luastatearray* tmp_statearray;
+    if (!tmp_handler->userData)
+        tmp_statearray = calloc(1, sizeof(luastatearray));
+    else
+        tmp_statearray = tmp_handler->userData;
+    tmp_statearray->state4 = tmp_L;
+    tmp_handler->separateFunc = INTERNAL_CollisionSeperateFunc;
+    tmp_handler->userData = tmp_statearray;
     return 0;
 }
 static int LUAPROC_CompileScript(lua_State* L) {
@@ -795,26 +886,9 @@ static int LUAPROC_SetScriptUserData(lua_State* L) {
     int lua_statehandle = lua_tonumber(L, 1);
     lua_State* tmp_L = LIST_At(&lua_statelist, lua_statehandle);
     char* name = lua_tostring(L, 2);
-    int type = lua_type(L, 3);
-    if (type == LUA_TNUMBER) {
-        float number = lua_tonumber(L, 3);
-        lua_pushnumber(tmp_L, number);
-        lua_setglobal(tmp_L, name);
-    }
-    else if (type == LUA_TBOOLEAN) {
-        int boolean = lua_toboolean(L, 3);
-        lua_pushnumber(tmp_L, boolean);
-        lua_setglobal(tmp_L, name);
-    }
-    else if (type == LUA_TSTRING) {
-        char* str = lua_tostring(L, 3);
-        lua_pushstring(tmp_L, str);
-        lua_setglobal(tmp_L, name);
-    }
-    else if (type == LUA_TFUNCTION) {
-        lua_xmove(L, tmp_L, 1);
-        lua_setglobal(tmp_L, name);
-    }
+    lua_xmove(L, tmp_L, 1);
+    lua_setglobal(tmp_L, name);
+    
     name = NULL; //for garabge collection
     return 0;
 }
@@ -1012,6 +1086,8 @@ static const struct luaL_reg libprocs[] = {
    {"physics_setbounce", LUAPROC_ChipmunkBodySetElasticity},
    {"physics_setsensor", LUAPROC_ChipmunkBodySetSensor},
    {"physics_setfilter", LUAPROC_ChipmunkSetShapeFilter},
+   {"physics_setposition", LUAPROC_ChipmunkBodySetPosition},
+   {"physics_setangle", LUAPROC_ChipmunkBodySetAngle},
    {"physics_updatestaticbody", LUAPROC_ChipmunkUpdateStaticBody},
    {"physics_addpinjoint", LUAPROC_ChipmunkAddPinJoint},
    {"physics_addslidejoint", LUAPROC_ChipmunkAddSlideJoint},
@@ -1028,6 +1104,9 @@ static const struct luaL_reg libprocs[] = {
    {"physics_setcollisiontype", LUAPROC_ChipmunkSetCollisionType},
    {"callback_create", LUAPROC_ChipmunkCreateCollisionCallback},
    {"callback_editbeginfunc", LUAPROC_ChipmunkEditCallbackBeginFunc},
+   {"callback_editprefunc", LUAPROC_ChipmunkEditCallbackPreFunc},
+   {"callback_editpostfunc", LUAPROC_ChipmunkEditCallbackPostFunc},
+   {"callback_editseperatefunc", LUAPROC_ChipmunkEditCallbackSeperateFunc},
    {"audio_init", LUAPROC_MixerInit},
    {"audio_createchunk", LUAPROC_MixerCreateChunk},
    {"audio_removechunk", LUAPROC_MixerRemoveChunk},

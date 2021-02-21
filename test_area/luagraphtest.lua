@@ -28,8 +28,8 @@ bulletlist = {}
 lastframemouse = false
 lua_graph.physics_createspace(0,0.2)
 --shape=1 means circle and shape=0 means rectangle
-physicsthing = {mass=100,shape=0,friction=0.9, body_type="dynamic", bouncyness=1, sensor=false}
-linething = {mass=1,shape=0,friction=0.5, body_type="static",bouncyness=1, sensor=false}
+physicsthing = {mass=100,shape=0,friction=0.9, body_type="dynamic", bouncyness=0, sensor=false}
+linething = {mass=1,shape=0,friction=0.5, body_type="static",bouncyness=0, sensor=false}
 bulletphy = {mass=1,shape=0,friction=0.01, body_type="dynamic",bouncyness=1, sensor=false}
 
 playerbody = lua_graph.physics_addbody(player, physicsthing)
@@ -41,20 +41,21 @@ joint = lua_graph.physics_addpinjoint(playerbody,linebody,tmp_thing,tmp_thing)
 lua_graph.physics_setfilter(playerbody,7,1,0)
 lua_graph.physics_setfilter(linebody,10,0,1)
 
-
-function functest(in1, in2)
-print("collided" .. in1 .. in2)
-
+removea = false
+function functest()
+removea = true
 end
 local testthing = {x=10}
 workpls = lua_graph.script_compile("test.lua")
 lua_graph.script_setuserdata(workpls,"play",lua_graph.audio_playchunk)
 lua_graph.script_setuserdata(workpls,"audio",gunshot)
+workpls2 = lua_graph.script_compile("testother.lua")
+lua_graph.script_setuserdata(workpls2,"destroy",functest)
 
 lua_graph.physics_setcollisiontype(playerbody,10)
 lua_graph.physics_setcollisiontype(linebody,21)
 callbacktest = lua_graph.callback_create(10,21)
-lua_graph.callback_editbeginfunc(callbacktest,workpls)
+lua_graph.callback_editbeginfunc(callbacktest,workpls2)
 
 
 
@@ -102,6 +103,9 @@ while true do
     keytable, mouse, close = lua_graph.handle_windowevents(window_handle)
 	camx, camy = lua_graph.camera_getpos()
 	lua_graph.physics_timestep(100)
+	if(removea) then
+		lua_graph.physics_removebody(linebody)
+	end
 
 	work = lua_graph.physics_getbody(playerbody)
 	player.x = work.x
@@ -149,22 +153,7 @@ while true do
 		lua_graph.physics_removecontraint(joint)
 		render = false
 	end
-	if keytable.k then
-		lua_graph.camera_move(camx + 1,camy)
-		camx, camy = lua_graph.camera_getpos()
-	end
-	if keytable.h then
-		lua_graph.camera_move(camx - 1,camy)
-		camx, camy = lua_graph.camera_getpos()
-	end
-	if keytable.u then
-		lua_graph.camera_move(camx,camy - 1)
-		camx, camy = lua_graph.camera_getpos()
-	end
-    if keytable.j then
-		lua_graph.camera_move(camx,camy + 1)
-		camx, camy = lua_graph.camera_getpos()
-	end
+	lua_graph.camera_move(math.floor(player.x + player.w / 2 - 400), math.floor(player.y + player.h / 2 - 400))
 
 	--do this so the player always looks at the mouse
 	--local player_center = lua_graph.math_getcenter(player)
