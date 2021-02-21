@@ -9,6 +9,7 @@ linkedList vfont_table;
 linkedList cbody;
 linkedList cconstraints;
 linkedList collisioncallbacks;
+linkedList lua_statelist;
 linkedList chunklists;
 linkedList musiclists;
 GLint default_shaders;
@@ -494,6 +495,27 @@ static int LUAPROC_ChipmunkRemoveBody(lua_State* L) {
     LIST_EmptyAt(&cbody, body_handle);
     return 0;
 }
+static int LUAPROC_ChipmunkSetBodyType(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    char* body_type = luaL_checkstring(L, 2);
+    int actual_type = 0;
+    if (body_type[0] == 'k')
+        actual_type = 1;
+    else if (body_type[0] == 's')
+        actual_type = 2;
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodySetType(tmp_body, actual_type);
+    return 0;
+}
+static int LUAPROC_ChipmunkSetCollisionType(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    cpCollisionType body_type = luaL_checknumber(L, 2);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodyEachShape(tmp_body, INTERNAL_SetCollisionTypeAllShapesBody, &body_type);
+    return 0;
+}
 static int LUAPROC_ChipmunkBodySetVelocty(lua_State* L) {
     lua_settop(L, -1);
     int body_handle = luaL_checknumber(L, 1);
@@ -725,7 +747,6 @@ static int LUAPROC_ChipmunkGetContraintInfo(lua_State* L) {
     lua_createtable(L, 0, 2);
     lua_pushnumber(L, force);
     lua_setfield(L, 2, "force");
-
     lua_pushnumber(L, maxforce);
     lua_setfield(L, 2, "maxforce");
     return 1;
@@ -735,6 +756,7 @@ static int LUAPROC_ChipmunkCreateCollisionCallback(lua_State* L) {
     int typea = luaL_checknumber(L, 1);
     int typeb = luaL_checknumber(L, 2);
     cpCollisionHandler* tmp_handler = cpSpaceAddCollisionHandler(space, typea, typeb);
+    tmp_handler->beginFunc = INTERNAL_CollisionBeginFunc;
     LIST_AddElement(&collisioncallbacks, tmp_handler);
     lua_pushnumber(L, (double)collisioncallbacks.count - 1);
     return 1;
@@ -742,23 +764,60 @@ static int LUAPROC_ChipmunkCreateCollisionCallback(lua_State* L) {
 static int LUAPROC_ChipmunkEditCallbackBeginFunc(lua_State* L) {
     lua_settop(L, -1);
     int callback_handle = luaL_checknumber(L, 1);
-    lua_CFunction tmp_func = lua_tocfunction(L, 2);
-    cfunctionstate* tmp_cfs = calloc(1, sizeof(cfunctionstate));
-    tmp_cfs->func = tmp_func;
+    int lua_statehandle = lua_tonumber(L, 2);
+    lua_State* tmp_L = LIST_At(&lua_statelist, lua_statehandle);
     cpCollisionHandler* tmp_handler = LIST_At(&collisioncallbacks, callback_handle);
-    tmp_handler->beginFunc = INTERNAL_CollisionBeginFunc;
-    tmp_handler->userData = tmp_cfs;
+    tmp_handler->userData = tmp_L;
     return 0;
 }
-static int LUAPROC_ChipmunkQueryCollisions(lua_State* L) {
+static int LUAPROC_CompileScript(lua_State* L) {
     lua_settop(L, -1);
-    int callback_handle = luaL_checknumber(L, 1);
-    cpCollisionHandler* tmp_handler = LIST_At(&collisioncallbacks, callback_handle);
-    cfunctionstate* tmp_cfs = tmp_handler->userData;
-    tmp_cfs->state = L;
+    char* filename = luaL_checkstring(L, 1);
+    lua_State* tmp_L = lua_open();
+    luaL_openlibs(tmp_L);
+    luaL_loadfile(tmp_L, filename);
+    lua_setglobal(tmp_L, "script");
+    filename = NULL; //for garabge collection
+    LIST_AddElement(&lua_statelist, tmp_L);
+    lua_pushnumber(L, (double)lua_statelist.count - 1);
+    return 1;
+}
+static int LUAPROC_RemoveScript(lua_State* L) {
+    lua_settop(L, -1); //honeslty dont need this but whatever
+    int script_handle = luaL_checknumber(L, 1);
+    lua_State* tmp_L = LIST_At(&lua_statelist, script_handle);
+    lua_close(tmp_L);
+    LIST_EmptyAt(&lua_statelist, script_handle);
     return 0;
 }
-
+static int LUAPROC_SetScriptUserData(lua_State* L) {
+    lua_settop(L, -1);
+    int lua_statehandle = lua_tonumber(L, 1);
+    lua_State* tmp_L = LIST_At(&lua_statelist, lua_statehandle);
+    char* name = lua_tostring(L, 2);
+    int type = lua_type(L, 3);
+    if (type == LUA_TNUMBER) {
+        float number = lua_tonumber(L, 3);
+        lua_pushnumber(tmp_L, number);
+        lua_setglobal(tmp_L, name);
+    }
+    else if (type == LUA_TBOOLEAN) {
+        int boolean = lua_toboolean(L, 3);
+        lua_pushnumber(tmp_L, boolean);
+        lua_setglobal(tmp_L, name);
+    }
+    else if (type == LUA_TSTRING) {
+        char* str = lua_tostring(L, 3);
+        lua_pushstring(tmp_L, str);
+        lua_setglobal(tmp_L, name);
+    }
+    else if (type == LUA_TFUNCTION) {
+        lua_xmove(L, tmp_L, 1);
+        lua_setglobal(tmp_L, name);
+    }
+    name = NULL; //for garabge collection
+    return 0;
+}
 static int LUAPROC_ChipmunkTimeStep(lua_State* L) {
     lua_settop(L, -1);
     float frame_rate = luaL_checknumber(L, 1);
@@ -915,6 +974,7 @@ static int LUAPROC_MathCenterOfRect(lua_State* L) {
     lua_setfield(L, 6, "y");
     return 1;
 }
+
 static const struct luaL_reg libprocs[] = {
    {"open_window",LUAPROC_OpenWindow},
    {"close_window",LUAPROC_CloseWindow},
@@ -936,6 +996,9 @@ static const struct luaL_reg libprocs[] = {
    {"remove_font", LUAPROC_RemoveFont},
    {"create_fonttexture", LUAPROC_RenderFontFast},
    {"handle_windowevents", LUAPROC_HandleWindowEvents},
+   {"script_compile", LUAPROC_CompileScript},
+   {"script_setuserdata", LUAPROC_SetScriptUserData},
+   {"script_remove", LUAPROC_RemoveScript},
    {"physics_createspace", LUAPROC_CreateChipmunkSpace},
    {"physics_editspace", LUAPROC_EditChipmunkSpace},
    {"physics_addbody", LUAPROC_ChipmunkAddBody},
@@ -961,9 +1024,10 @@ static const struct luaL_reg libprocs[] = {
    {"physics_addmotor", LUAPROC_ChipmunkAddMotor},
    {"physics_addgearjoint", LUAPROC_ChipmunkAddGearJoint},
    {"physics_removecontraint", LUAPROC_ChipmunkRemoveConstraint},
+   {"physics_setbodytype", LUAPROC_ChipmunkSetBodyType},
+   {"physics_setcollisiontype", LUAPROC_ChipmunkSetCollisionType},
    {"callback_create", LUAPROC_ChipmunkCreateCollisionCallback},
    {"callback_editbeginfunc", LUAPROC_ChipmunkEditCallbackBeginFunc},
-   {"callback_query", LUAPROC_ChipmunkQueryCollisions},
    {"audio_init", LUAPROC_MixerInit},
    {"audio_createchunk", LUAPROC_MixerCreateChunk},
    {"audio_removechunk", LUAPROC_MixerRemoveChunk},

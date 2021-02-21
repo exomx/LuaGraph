@@ -63,13 +63,18 @@ void INTERNAL_RotateRectPoints(float* center, float* points, float angle) {
 
 }
 cpBool INTERNAL_CollisionBeginFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData) {
-	cfunctionstate* cfs = userData;
-	lua_settop(cfs->state, -1);
-	cfs->func(cfs->state);
-	int result = lua_toboolean(cfs->state, 1);
-	return result;
+	lua_State* L = userData;
+	lua_settop(L, 0);
+	lua_getglobal(L, "script");
+	lua_pushnumber(L, 10);
+	lua_pushnumber(L, 20);
+	lua_pcall(L, 2, 1, 0);
+	int returnval = lua_toboolean(L, 1);
+	lua_settop(L, 0);
+	return returnval;
 }
 
+//chipmunk iterator stuff
 void INTERNAL_RemoveAllShapesBody(cpBody* body, cpShape* shape, void* data) {
 	cpSpaceRemoveShape(space, shape);
 	cpShapeFree(shape);
@@ -93,4 +98,8 @@ void INTERNAL_SetFilterAllShapesBody(cpBody* body, cpShape* shape, void* data) {
 void INTERNAL_SetSurfaceVelocityAllShapesBody(cpBody* body, cpShape* shape, void* data) {
 	cpVect* vdata = data;
 	cpShapeSetSurfaceVelocity(shape, *vdata);
+}
+void INTERNAL_SetCollisionTypeAllShapesBody(cpBody* body, cpShape* shape, void* data) {
+	cpCollisionType* idata = data;
+	cpShapeSetCollisionType(shape, *idata);
 }

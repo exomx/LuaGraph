@@ -12,6 +12,7 @@ local testrect = {x=20,y=20, w=100, h=100, r=0, g=1, b=0, texture=test, angle=0}
 lua_graph.change_backgroundcolor(1,0,0)
 --set up audio
 lua_graph.audio_init(256)
+gunshot = lua_graph.audio_createchunk("gunshot.wav",16)
 
 --set up images
 playerpic, twa, tha = lua_graph.load_texture("character_1.png")
@@ -40,12 +41,20 @@ joint = lua_graph.physics_addpinjoint(playerbody,linebody,tmp_thing,tmp_thing)
 lua_graph.physics_setfilter(playerbody,7,1,0)
 lua_graph.physics_setfilter(linebody,10,0,1)
 
-function functest()
-print("collided")
-end
 
-callbacktest = lua_graph.callback_create(0,1)
-lua_graph.callback_editbeginfunc(callbacktest,functest)
+function functest(in1, in2)
+print("collided" .. in1 .. in2)
+
+end
+local testthing = {x=10}
+workpls = lua_graph.script_compile("test.lua")
+lua_graph.script_setuserdata(workpls,"play",lua_graph.audio_playchunk)
+lua_graph.script_setuserdata(workpls,"audio",gunshot)
+
+lua_graph.physics_setcollisiontype(playerbody,10)
+lua_graph.physics_setcollisiontype(linebody,21)
+callbacktest = lua_graph.callback_create(10,21)
+lua_graph.callback_editbeginfunc(callbacktest,workpls)
 
 
 
@@ -93,7 +102,7 @@ while true do
     keytable, mouse, close = lua_graph.handle_windowevents(window_handle)
 	camx, camy = lua_graph.camera_getpos()
 	lua_graph.physics_timestep(100)
-	lua_graph.callback_query(callbacktest)
+
 	work = lua_graph.physics_getbody(playerbody)
 	player.x = work.x
 	player.y = work.y
@@ -157,7 +166,6 @@ while true do
 		camx, camy = lua_graph.camera_getpos()
 	end
 
-
 	--do this so the player always looks at the mouse
 	--local player_center = lua_graph.math_getcenter(player)
 	--player.angle = lua_graph.math_anglebetween(player_center, mouse)
@@ -189,3 +197,4 @@ while true do
 	lastframemouse = mouse.left
 end
 
+return 10

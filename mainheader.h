@@ -31,6 +31,7 @@ extern void INTERNAL_SetElasticityAllShapesBody(cpBody* body, cpShape* shape, vo
 extern void INTERNAL_SetSensorAllShapesBody(cpBody* body, cpShape* shape, void* data);
 extern void INTERNAL_SetFilterAllShapesBody(cpBody* body, cpShape* shape, void* data);
 extern void INTERNAL_SetSurfaceVelocityAllShapesBody(cpBody* body, cpShape* shape, void* data);
+extern void INTERNAL_SetCollisionTypeAllShapesBody(cpBody* body, cpShape* shape, void* data);
 
 //collision dectection
 
