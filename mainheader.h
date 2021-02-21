@@ -14,6 +14,12 @@
 
 //global chipmunkspace
 extern cpSpace* space;
+//struct for chipmunk collisions
+struct cfunctionstate {
+	lua_CFunction func;
+	lua_State* state;
+};
+typedef struct cfunctionstate cfunctionstate;
 
 //internal prototypes
 extern float* INTERNAL_RotatePoint(float cx, float cy, float px, float py, float angle);
@@ -24,3 +30,8 @@ extern void INTERNAL_SetFrictionAllShapesBody(cpBody* body, cpShape* shape, void
 extern void INTERNAL_SetElasticityAllShapesBody(cpBody* body, cpShape* shape, void* data);
 extern void INTERNAL_SetSensorAllShapesBody(cpBody* body, cpShape* shape, void* data);
 extern void INTERNAL_SetFilterAllShapesBody(cpBody* body, cpShape* shape, void* data);
+extern void INTERNAL_SetSurfaceVelocityAllShapesBody(cpBody* body, cpShape* shape, void* data);
+
+//collision dectection
+
+extern cpBool INTERNAL_CollisionBeginFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData);

@@ -62,6 +62,13 @@ void INTERNAL_RotateRectPoints(float* center, float* points, float angle) {
 	points[22] = bottomright[1];
 
 }
+cpBool INTERNAL_CollisionBeginFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData) {
+	cfunctionstate* cfs = userData;
+	lua_settop(cfs->state, -1);
+	cfs->func(cfs->state);
+	int result = lua_toboolean(cfs->state, 1);
+	return result;
+}
 
 void INTERNAL_RemoveAllShapesBody(cpBody* body, cpShape* shape, void* data) {
 	cpSpaceRemoveShape(space, shape);
@@ -82,4 +89,8 @@ void INTERNAL_SetSensorAllShapesBody(cpBody* body, cpShape* shape, void* data) {
 void INTERNAL_SetFilterAllShapesBody(cpBody* body, cpShape* shape, void* data) {
 	cpShapeFilter* sfdata = data;
 	cpShapeSetFilter(shape, *sfdata);
+}
+void INTERNAL_SetSurfaceVelocityAllShapesBody(cpBody* body, cpShape* shape, void* data) {
+	cpVect* vdata = data;
+	cpShapeSetSurfaceVelocity(shape, *vdata);
 }

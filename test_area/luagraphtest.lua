@@ -35,7 +35,19 @@ playerbody = lua_graph.physics_addbody(player, physicsthing)
 linebody = lua_graph.physics_addbody(line, linething)
 line2body = lua_graph.physics_addbody(line2,linething)
 
-joint = lua_graph.physics_addpinjoint(playerbody,linebody)
+tmp_thing = {x=0,y=0}
+joint = lua_graph.physics_addpinjoint(playerbody,linebody,tmp_thing,tmp_thing)
+lua_graph.physics_setfilter(playerbody,7,1,0)
+lua_graph.physics_setfilter(linebody,10,0,1)
+
+function functest()
+print("collided")
+end
+
+callbacktest = lua_graph.callback_create(0,1)
+lua_graph.callback_editbeginfunc(callbacktest,functest)
+
+
 
 function add_bullet(point, vel, inangle)
 local rect =  {x=point.x,y=point.y,w=20,h=6, r=1,g=1,b=1, texture=0, angle = inangle}
@@ -45,12 +57,12 @@ local tmp_vel = {x=vel.x,y=vel.y}
 lua_graph.physics_setvel(tmp_body, tmp_vel)
 bulletlist[#bulletlist + 1] = rect
 end
-function handle_bullets()
+function handle_bullets(camerax, cameray)
 --set up gl buffer
 local glbuffer = {amount=0,texture=0}
 for k,v in pairs(bulletlist) do
 --if out of bounds
-if v.x < -80 or v.x > 880 or v.y < -5 or v.y > 805 then
+if v.x < -80 + camerax or v.x > 880 + camerax or v.y < -5 + cameray or v.y > 805 + cameray then
 lua_graph.physics_removebody(v.body)
 bulletlist[k] = bulletlist[k + 1] -- remove this bullet from this list to be collected and use the next bullet instead
 for i = 1, #bulletlist - k do --see how much of the list is left
@@ -79,7 +91,9 @@ render = true
 while true do
 	start = os.clock()
     keytable, mouse, close = lua_graph.handle_windowevents(window_handle)
+	camx, camy = lua_graph.camera_getpos()
 	lua_graph.physics_timestep(100)
+	lua_graph.callback_query(callbacktest)
 	work = lua_graph.physics_getbody(playerbody)
 	player.x = work.x
 	player.y = work.y
@@ -121,14 +135,28 @@ while true do
 		cool.x = cool.w
 		end
 	end
+	--note: DO NOT MAKE CAMERA COORDNIATES A DECIMAL EVER
 	if keytable.g then
 		lua_graph.physics_removecontraint(joint)
 		render = false
 	end
-	if keytable.h then
-		lua_graph.camera_move(100,130)
+	if keytable.k then
+		lua_graph.camera_move(camx + 1,camy)
+		camx, camy = lua_graph.camera_getpos()
 	end
-	print(lua_graph.camera_getpos())
+	if keytable.h then
+		lua_graph.camera_move(camx - 1,camy)
+		camx, camy = lua_graph.camera_getpos()
+	end
+	if keytable.u then
+		lua_graph.camera_move(camx,camy - 1)
+		camx, camy = lua_graph.camera_getpos()
+	end
+    if keytable.j then
+		lua_graph.camera_move(camx,camy + 1)
+		camx, camy = lua_graph.camera_getpos()
+	end
+
 
 	--do this so the player always looks at the mouse
 	--local player_center = lua_graph.math_getcenter(player)
@@ -144,7 +172,7 @@ while true do
 	add_bullet(tmp_point,tmp_outputvel,angle)
 	end
 	lua_graph.clear_window()
-	handle_bullets()
+	handle_bullets(camx,camy)
 	lua_graph.draw_quadfastsheet(player,cool)
 	lua_graph.draw_quadfast(line)
 	lua_graph.draw_quadfast(line2)

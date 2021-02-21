@@ -8,6 +8,7 @@ linkedList glcontextlist;
 linkedList vfont_table;
 linkedList cbody;
 linkedList cconstraints;
+linkedList collisioncallbacks;
 linkedList chunklists;
 linkedList musiclists;
 GLint default_shaders;
@@ -553,12 +554,145 @@ static int LUAPROC_ChipmunkUpdateStaticBody(lua_State* L) {
     cpSpaceReindexShapesForBody(space, tmp_body);
     return 0;
 }
+static int LUAPROC_ChipmunkBodySetSurfaceVelocity(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    float speedx = luaL_checknumber(L, 2);
+    float speedy = luaL_checknumber(L, 3);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpVect tmp_vector = cpv(speedx, speedy);
+    cpBodyEachShape(tmp_body, INTERNAL_SetSurfaceVelocityAllShapesBody, &tmp_vector);
+    return 0;
+}
 static int LUAPROC_ChipmunkAddPinJoint(lua_State* L) {
     lua_settop(L, -1);
     int body1_handle = luaL_checknumber(L, 1);
     int body2_handle = luaL_checknumber(L, 2);
+    luaL_checktype(L, 3, LUA_TTABLE);
+    luaL_checktype(L, 4, LUA_TTABLE);
+    lua_getfield(L, 3, "x"), lua_getfield(L, 3, "y"), lua_getfield(L, 4, "x"), lua_getfield(L, 4, "y");
+    float offsetx1 = luaL_checknumber(L, 5), offsety1 = luaL_checknumber(L, 6), offsetx2 = luaL_checknumber(L, 7), offsety2 = luaL_checknumber(L, 8);
     cpBody* body1 = LIST_At(&cbody, body1_handle), *body2 = LIST_At(&cbody, body2_handle);
-    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpPinJointNew(body1, body2, cpv(0,0), cpv(0,0)));
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpPinJointNew(body1, body2, cpv(offsetx1,offsety1), cpv(offsetx2,offsety2)));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkAddSlideJoint(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    float min = luaL_checknumber(L, 3);
+    float max = luaL_checknumber(L, 4);
+    luaL_checktype(L, 5, LUA_TTABLE);
+    luaL_checktype(L, 6, LUA_TTABLE);
+    lua_getfield(L, 5, "x"), lua_getfield(L, 5, "y"), lua_getfield(L, 6, "x"), lua_getfield(L, 6, "y");
+    float offsetx1 = luaL_checknumber(L, 7), offsety1 = luaL_checknumber(L, 8), offsetx2 = luaL_checknumber(L, 9), offsety2 = luaL_checknumber(L, 10);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), * body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpSlideJointNew(body1,body2,cpv(offsetx1,offsety1),cpv(offsetx2,offsety2), min, max));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkAddPivotJoint(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    luaL_checktype(L, 3, LUA_TTABLE);
+    lua_getfield(L, 3, "x"), lua_getfield(L, 3, "y");
+    float pivotx = luaL_checknumber(L, 4), pivoty = luaL_checknumber(L, 5);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), * body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpPivotJointNew(body1,body2,cpv(pivotx,pivoty)));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkAddGrooveJoint(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    luaL_checktype(L, 3, LUA_TTABLE);
+    luaL_checktype(L, 4, LUA_TTABLE);
+    luaL_checktype(L, 5, LUA_TTABLE);
+    lua_getfield(L, 3, "x"), lua_getfield(L, 3, "y"), lua_getfield(L, 4, "x"), lua_getfield(L, 4, "y"), lua_getfield(L, 5, "x"), lua_getfield(L, 5, "y");
+    float startx = luaL_checknumber(L, 6), starty = luaL_checknumber(L, 7), endx = luaL_checknumber(L, 8), endy = luaL_checknumber(L, 9), anchorx = luaL_checknumber(L, 10), anchory = luaL_checknumber(L, 11);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), * body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpGrooveJointNew(body1, body2, cpv(startx,starty), cpv(endx,endy), cpv(anchorx,anchory)));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkAddSpring(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    luaL_checktype(L, 3, LUA_TTABLE);
+    luaL_checktype(L, 4, LUA_TTABLE);
+    float restlength = luaL_checknumber(L, 5), stiffness = luaL_checknumber(L, 6), damping = luaL_checknumber(L, 7);
+    lua_getfield(L, 3, "x"), lua_getfield(L, 3, "y"), lua_getfield(L, 4, "x"), lua_getfield(L, 4, "y");
+    float offsetx1 = luaL_checknumber(L, 8), offsety1 = luaL_checknumber(L, 9), offsetx2 = luaL_checknumber(L, 10), offsety2 = luaL_checknumber(L, 11);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), * body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpDampedSpringNew(body1,body2,cpv(offsetx1,offsety1), cpv(offsetx2,offsety2), restlength, stiffness, damping));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkAddRotorySpring(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    luaL_checktype(L, 3, LUA_TTABLE);
+    luaL_checktype(L, 4, LUA_TTABLE);
+    float restangle = luaL_checknumber(L, 5), stiffness = luaL_checknumber(L, 6), damping = luaL_checknumber(L, 7);
+    lua_getfield(L, 3, "x"), lua_getfield(L, 3, "y"), lua_getfield(L, 4, "x"), lua_getfield(L, 4, "y");
+    float offsetx1 = luaL_checknumber(L, 8), offsety1 = luaL_checknumber(L, 9), offsetx2 = luaL_checknumber(L, 10), offsety2 = luaL_checknumber(L, 11);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), * body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpDampedSpringNew(body1, body2, cpv(offsetx1, offsety1), cpv(offsetx2, offsety2), restangle , stiffness, damping));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkAddRotoryLimit(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    float minangle = luaL_checknumber(L, 3), maxangle = luaL_checknumber(L, 4);
+    float maxradians = maxangle * (3.141592 / 180), minradians = minangle * (3.141592 / 180);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), * body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpRotaryLimitJointNew(body1,body2,minradians,maxradians));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkAddRatchetJoint(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    float offset = luaL_checknumber(L, 3), distance_clicks = luaL_checknumber(L, 4);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), * body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpRatchetJointNew(body1, body2, offset, distance_clicks));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkAddGearJoint(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    float offset = luaL_checknumber(L, 3), ratio = luaL_checknumber(L, 4);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), * body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpGearJointNew(body1,body2,offset,ratio));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkAddMotor(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    float rate = luaL_checknumber(L, 3);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), * body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpSimpleMotorNew(body1,body2,rate));
     LIST_AddElement(&cconstraints, tmp_constraint);
     lua_pushnumber(L, ((double)cconstraints.count) - 1);
     return 1;
@@ -574,6 +708,57 @@ static int LUAPROC_ChipmunkRemoveConstraint(lua_State* L) { //should be able to 
     }
     return 0;
 }
+static int LUAPROC_ChipmunkConstraintCollideBodies(lua_State* L) {
+    lua_settop(L, -1);
+    int constraint_handle = luaL_checknumber(L, 1);
+    int collidebodies = lua_toboolean(L, 2);
+    cpConstraint* tmp_constraint = LIST_At(L, constraint_handle);
+    cpConstraintSetCollideBodies(tmp_constraint, collidebodies);
+    return 0;
+}
+static int LUAPROC_ChipmunkGetContraintInfo(lua_State* L) {
+    lua_settop(L, -1);
+    int constraint_handle = luaL_checknumber(L, 1);
+    cpConstraint* tmp_constraint = LIST_At(&cconstraints, constraint_handle);
+    float force = cpConstraintGetImpulse(tmp_constraint);
+    float maxforce = cpConstraintGetMaxForce(tmp_constraint);
+    lua_createtable(L, 0, 2);
+    lua_pushnumber(L, force);
+    lua_setfield(L, 2, "force");
+
+    lua_pushnumber(L, maxforce);
+    lua_setfield(L, 2, "maxforce");
+    return 1;
+}
+static int LUAPROC_ChipmunkCreateCollisionCallback(lua_State* L) {
+    lua_settop(L, -1);
+    int typea = luaL_checknumber(L, 1);
+    int typeb = luaL_checknumber(L, 2);
+    cpCollisionHandler* tmp_handler = cpSpaceAddCollisionHandler(space, typea, typeb);
+    LIST_AddElement(&collisioncallbacks, tmp_handler);
+    lua_pushnumber(L, (double)collisioncallbacks.count - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkEditCallbackBeginFunc(lua_State* L) {
+    lua_settop(L, -1);
+    int callback_handle = luaL_checknumber(L, 1);
+    lua_CFunction tmp_func = lua_tocfunction(L, 2);
+    cfunctionstate* tmp_cfs = calloc(1, sizeof(cfunctionstate));
+    tmp_cfs->func = tmp_func;
+    cpCollisionHandler* tmp_handler = LIST_At(&collisioncallbacks, callback_handle);
+    tmp_handler->beginFunc = INTERNAL_CollisionBeginFunc;
+    tmp_handler->userData = tmp_cfs;
+    return 0;
+}
+static int LUAPROC_ChipmunkQueryCollisions(lua_State* L) {
+    lua_settop(L, -1);
+    int callback_handle = luaL_checknumber(L, 1);
+    cpCollisionHandler* tmp_handler = LIST_At(&collisioncallbacks, callback_handle);
+    cfunctionstate* tmp_cfs = tmp_handler->userData;
+    tmp_cfs->state = L;
+    return 0;
+}
+
 static int LUAPROC_ChipmunkTimeStep(lua_State* L) {
     lua_settop(L, -1);
     float frame_rate = luaL_checknumber(L, 1);
@@ -757,6 +942,7 @@ static const struct luaL_reg libprocs[] = {
    {"physics_removebody", LUAPROC_ChipmunkRemoveBody}, 
    {"physics_timestep", LUAPROC_ChipmunkTimeStep},
    {"physics_getbody", LUAPROC_ChipmunkGetBodyInfo},
+   {"physics_setsurfacevel", LUAPROC_ChipmunkBodySetSurfaceVelocity},
    {"physics_setvel", LUAPROC_ChipmunkBodySetVelocty},
    {"physics_setangularvel", LUAPROC_ChipmunkBodySetAngularVelocity},
    {"physics_setfricition", LUAPROC_ChipmunkBodySetFriction},
@@ -765,7 +951,19 @@ static const struct luaL_reg libprocs[] = {
    {"physics_setfilter", LUAPROC_ChipmunkSetShapeFilter},
    {"physics_updatestaticbody", LUAPROC_ChipmunkUpdateStaticBody},
    {"physics_addpinjoint", LUAPROC_ChipmunkAddPinJoint},
+   {"physics_addslidejoint", LUAPROC_ChipmunkAddSlideJoint},
+   {"physics_addpivotjoint", LUAPROC_ChipmunkAddPivotJoint},
+   {"physics_addgroovejoint", LUAPROC_ChipmunkAddGrooveJoint},
+   {"physics_addspring", LUAPROC_ChipmunkAddSpring},
+   {"physics_addrotoryspring", LUAPROC_ChipmunkAddRotorySpring},
+   {"physics_addrotorylimit", LUAPROC_ChipmunkAddRotoryLimit},
+   {"physics_addratchetjoint", LUAPROC_ChipmunkAddRatchetJoint},
+   {"physics_addmotor", LUAPROC_ChipmunkAddMotor},
+   {"physics_addgearjoint", LUAPROC_ChipmunkAddGearJoint},
    {"physics_removecontraint", LUAPROC_ChipmunkRemoveConstraint},
+   {"callback_create", LUAPROC_ChipmunkCreateCollisionCallback},
+   {"callback_editbeginfunc", LUAPROC_ChipmunkEditCallbackBeginFunc},
+   {"callback_query", LUAPROC_ChipmunkQueryCollisions},
    {"audio_init", LUAPROC_MixerInit},
    {"audio_createchunk", LUAPROC_MixerCreateChunk},
    {"audio_removechunk", LUAPROC_MixerRemoveChunk},
