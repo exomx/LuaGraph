@@ -11,3 +11,16 @@
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_mixer.h>
 #include <chipmunk/chipmunk.h>
+
+//global chipmunkspace
+extern cpSpace* space;
+
+//internal prototypes
+extern float* INTERNAL_RotatePoint(float cx, float cy, float px, float py, float angle);
+extern float* INTERNAL_GetCenterRect(float  x, float y, float w, float h);
+extern void INTERNAL_RotateRectPoints(float* center, float* points, float angle);
+extern void INTERNAL_RemoveAllShapesBody(cpBody* body, cpShape* shape, void* data);
+extern void INTERNAL_SetFrictionAllShapesBody(cpBody* body, cpShape* shape, void* data);
+extern void INTERNAL_SetElasticityAllShapesBody(cpBody* body, cpShape* shape, void* data);
+extern void INTERNAL_SetSensorAllShapesBody(cpBody* body, cpShape* shape, void* data);
+extern void INTERNAL_SetFilterAllShapesBody(cpBody* body, cpShape* shape, void* data);

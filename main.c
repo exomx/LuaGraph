@@ -2,14 +2,12 @@
 #include "auxh/linkedlist_h.h"
 //misc internal functions
 GLint GL_CompileShader(char* shader_fname, GLenum type);
-float* INTERNAL_RotatePoint(float cx, float cy, float px, float py, float angle);
-float* INTERNAL_GetCenterRect(float  x, float y, float w, float h);
-void INTERNAL_RotateRectPoints(float* center, float* points, float angle);
 
 linkedList windowList;
 linkedList glcontextlist;
 linkedList vfont_table;
 linkedList cbody;
+linkedList cconstraints;
 linkedList chunklists;
 linkedList musiclists;
 GLint default_shaders;
@@ -18,6 +16,7 @@ SDL_Color white = { 255,255,255 };
 GLint tmp_buf, tmp_vao, null_tex, drawbuf_tex; //global gl context stuff, might make it so lua can only have one context and one window, not sure
 int gl_array_buffer_size = 0; //global size of array buffer
 int max_gl_array_buffer_size = 10; //measured in amount of quads
+float camcoord[2]; //location of camera
 SDL_Event eventhandle; //More global window stuff ik, we have to make a thread system to actually use the window list
 Uint8* key_input; //keyboard stuff
 cpSpace* space; //global chipmunk space, lord knows I dont want to make a list of these and have to manage them
@@ -37,6 +36,14 @@ static int LUAPROC_OpenWindow(lua_State* L) {
     lua_pushnumber(L, error);
 
     return 2;
+}
+static LUAPROC_CloseWindow(lua_State* L) {
+    lua_settop(L, -1);
+    int window_handle = luaL_checknumber(L, 1);
+    SDL_Window* tmp_window = LIST_At(&windowList, window_handle);
+    SDL_DestroyWindow(tmp_window);
+    LIST_EmptyAt(&windowList, window_handle);
+    return 0;
 }
 static int LUAPROC_CreateGLContext(lua_State* L) {
     lua_settop(L, -1);
@@ -105,6 +112,17 @@ static int LUAPROC_ChangeBackgroundColor(lua_State* L) {
     double g = luaL_checknumber(L, 2);
     double b = luaL_checknumber(L, 3);
     glClearColor(r, g, b, 1);
+    return 0;
+}
+static int LUAPROC_DrawLine(lua_State* L) {
+    lua_settop(L, -1);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    lua_getfield(L, 1, "x1"), lua_getfield(L, 1, "y1"), lua_getfield(L, 1, "x2"), lua_getfield(L, 1, "y2"), lua_getfield(L, 1, "r"), lua_getfield(L, 1, "g"), lua_getfield(L, 1, "b");
+    float x1 = luaL_checknumber(L, 2), y1 = luaL_checknumber(L, 3), x2 = luaL_checknumber(L, 4), y2 = luaL_checknumber(L, 5), r = luaL_checknumber(L, 6), g = luaL_checknumber(L, 7), b = luaL_checknumber(L, 8);
+    float tmp_vertexes[28] = { x1,y1,r,g,b,0,0,x2,y2,r,g,b,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+    glBindTexture(GL_TEXTURE_2D, null_tex);
+    glBufferSubData(GL_ARRAY_BUFFER, NULL, sizeof(float) * 28, tmp_vertexes);
+    glDrawArrays(GL_LINES, 0, 2);
     return 0;
 }
 static int LUAPROC_DrawQuadFly(lua_State* L) { //fly meaning "on the fly"
@@ -314,6 +332,22 @@ static int LUAPROC_HandleWindowEvents(lua_State* L) {
     lua_pushboolean(L, bReturn);
     return 3;
 }
+static int LUAPROC_MoveCamera(lua_State* L) {
+    lua_settop(L, -1);
+    float camx = luaL_checknumber(L, 1);
+    float camy = luaL_checknumber(L, 2);
+    camcoord[0] = -camx;
+    camcoord[1] = -camy;
+    int loc = glGetUniformLocation(default_shaders, "camloc");
+    glUniform2fv(loc, 1, camcoord);
+    return 0;
+}
+static int LUAPROC_GetCameraPos(lua_State* L) {
+    lua_settop(L, -1);
+    lua_pushnumber(L, -camcoord[0]);
+    lua_pushnumber(L, -camcoord[1]);
+    return 2;
+}
 //now, the texture functions
 static int LUAPROC_LoadTexture(lua_State* L) { //loads texture into an opengl texture object
     GLint tmp_tex;
@@ -337,6 +371,12 @@ static int LUAPROC_LoadTexture(lua_State* L) { //loads texture into an opengl te
     SDL_FreeSurface(tmp_surface);
     return 3;
 }
+static int LUAPROC_RemoveTexture(lua_State* L) {
+    lua_settop(L, -1);
+    GLint tex_handle = luaL_checknumber(L, 1);
+    glDeleteTextures(1, &tex_handle);
+    return 0;
+}
 //font stuff
 static int LUAPROC_LoadFont(lua_State* L) { //loads a font onto the virtual read-only font table
     lua_settop(L, -1); //don't really think we need this, it doesn't do anything, but whatever, too lazy to remove
@@ -349,6 +389,14 @@ static int LUAPROC_LoadFont(lua_State* L) { //loads a font onto the virtual read
     path = NULL; //to be sure the lua garbage collection picks this up
     lua_pushnumber(L, ((double)vfont_table.count) - 1); //return a handle to this font
     return 1;
+}
+static int LUAPROC_RemoveFont(lua_State* L) {
+    lua_settop(L, -1);
+    int font_handle = luaL_checknumber(L, 1);
+    TTF_Font* tmp_font = LIST_At(&vfont_table, font_handle);
+    TTF_CloseFont(tmp_font);
+    LIST_EmptyAt(&vfont_table, font_handle);
+    return 0;
 }
 static int LUAPROC_RenderFontFast(lua_State* L) { //this is called "fast", but I don't think I'll support buffering fonts quads like how we do with normal quads
     lua_settop(L, -1);
@@ -368,10 +416,6 @@ static int LUAPROC_RenderFontFast(lua_State* L) { //this is called "fast", but I
     lua_pushnumber(L, tmp_tex);
     return 1;
 }
-static int LUAPROC_CloseWindow(lua_State* L) {
-    //roflcopter, this does nothing lmosa
-    return 1;
-}
 static int LUAPROC_CreateChipmunkSpace(lua_State* L) {
     lua_settop(L, -1);
     float gravx = luaL_checknumber(L, 1);
@@ -385,8 +429,10 @@ static int LUAPROC_EditChipmunkSpace(lua_State* L) {
     lua_settop(L, -1);
     float gravx = luaL_checknumber(L, 1);
     float gravy = luaL_checknumber(L, 2);
+    float dampining = luaL_checknumber(L, 3);
     cpVect gravity = cpv(gravx, gravy);
     cpSpaceSetGravity(space, gravity);
+    cpSpaceSetDamping(space, dampining);
     return 0;
 }
 static int LUAPROC_ChipmunkAddBody(lua_State* L) {
@@ -394,13 +440,20 @@ static int LUAPROC_ChipmunkAddBody(lua_State* L) {
     luaL_checktype(L, 1, LUA_TTABLE);
     luaL_checktype(L, 2, LUA_TTABLE);
     lua_getfield(L, 1, "x"), lua_getfield(L, 1, "y"), lua_getfield(L, 1, "w"), lua_getfield(L, 1, "h"), lua_getfield(L, 1, "angle");
-    lua_getfield(L, 2, "mass"), lua_getfield(L, 2, "velocity"), lua_getfield(L, 2, "friction"), lua_getfield(L, 2, "body_type");
+    lua_getfield(L, 2, "mass"), lua_getfield(L, 2, "shape"), lua_getfield(L, 2, "friction"), lua_getfield(L, 2, "body_type"), lua_getfield(L, 2, "bouncyness"), lua_getfield(L, 2, "sensor");
     float x = luaL_checknumber(L, 3), y = luaL_checknumber(L, 4), w = luaL_checknumber(L, 5), h = luaL_checknumber(L, 6), angle = luaL_checknumber(L, 7);
-    float mass = luaL_checknumber(L, 8), velocity = luaL_checknumber(L, 9), friction = luaL_checknumber(L, 10);
+    float mass = luaL_checknumber(L, 8), friction = luaL_checknumber(L, 10), elasticity = luaL_checknumber(L, 12);
+    int shape = luaL_checknumber(L, 9), sensor = lua_toboolean(L, 13);
+    if (shape)
+        w = h;
     float radians = angle * (3.141592 / 180);
     char* type = luaL_checkstring(L, 11);
     cpBodyType actual_type = CP_BODY_TYPE_DYNAMIC;
-    float momentum = cpMomentForBox(mass, w, h);
+    float momentum;
+    if (!shape)
+        momentum = cpMomentForBox(mass, w, h);
+    else
+        momentum = cpMomentForCircle(mass, 0, w / 2, cpv(0, 0));
     cpBody* tmp_body = cpSpaceAddBody(space, cpBodyNew(mass, momentum));
     cpBodySetPosition(tmp_body, cpv(x + w/2,y + h/2));
     cpVect* size = calloc(1, sizeof(cpVect));
@@ -415,11 +468,30 @@ static int LUAPROC_ChipmunkAddBody(lua_State* L) {
     free(type);
     if(actual_type != CP_BODY_TYPE_DYNAMIC)
         cpBodySetType(tmp_body, actual_type);
-    cpShape* tmp_shape = cpSpaceAddShape(space, cpBoxShapeNew(tmp_body, w, h, 0));
+    cpShape* tmp_shape;
+    if(!shape)
+        tmp_shape = cpSpaceAddShape(space, cpBoxShapeNew(tmp_body, w, h, 0));
+    else
+        tmp_shape = cpSpaceAddShape(space, cpCircleShapeNew(tmp_body, w/2, cpv(0,0)));
     cpShapeSetFriction(tmp_shape, friction);
+    cpShapeSetElasticity(tmp_shape, elasticity);
+    if (sensor)
+        cpShapeSetSensor(tmp_shape, sensor);
     LIST_AddElement(&cbody, tmp_body);
     lua_pushnumber(L, (double)cbody.count - 1);
     return 1;
+}
+static int LUAPROC_ChipmunkRemoveBody(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    if (tmp_body) {
+        cpBodyEachShape(tmp_body, INTERNAL_RemoveAllShapesBody, NULL);
+        cpSpaceRemoveBody(space, tmp_body);
+        cpBodyFree(tmp_body);
+    }
+    LIST_EmptyAt(&cbody, body_handle);
+    return 0;
 }
 static int LUAPROC_ChipmunkBodySetVelocty(lua_State* L) {
     lua_settop(L, -1);
@@ -431,10 +503,81 @@ static int LUAPROC_ChipmunkBodySetVelocty(lua_State* L) {
     cpBodySetVelocity(tmp_body, cpv(x, y));
     return 0;
 }
+static int LUAPROC_ChipmunkBodySetAngularVelocity(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    float speed = luaL_checknumber(L, 2);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodySetAngularVelocity(tmp_body, speed);
+    return 0;
+}
+static int LUAPROC_ChipmunkBodySetFriction(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    float friction = luaL_checknumber(L, 2);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodyEachShape(tmp_body, INTERNAL_SetFrictionAllShapesBody, &friction);
+    return 0;
+}
+static int LUAPROC_ChipmunkBodySetElasticity(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    float elasticity = luaL_checknumber(L, 2);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodyEachShape(tmp_body, INTERNAL_SetElasticityAllShapesBody, &elasticity);
+    return 0;
+}
+static int LUAPROC_ChipmunkBodySetSensor(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    int sensor = lua_toboolean(L, 2);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodyEachShape(tmp_body, INTERNAL_SetSensorAllShapesBody, &sensor);
+    return 0;
+}
+static int LUAPROC_ChipmunkSetShapeFilter(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    int body_group = luaL_checknumber(L, 2);
+    int body_catagory = luaL_checknumber(L, 2);
+    int body_mask = luaL_checknumber(L, 2);
+    cpShapeFilter tmp_filter = cpShapeFilterNew(body_group, body_catagory, body_mask);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpBodyEachShape(tmp_body, INTERNAL_SetFilterAllShapesBody, &tmp_filter);
+    return 0;
+}
+static int LUAPROC_ChipmunkUpdateStaticBody(lua_State* L) {
+    lua_settop(L, -1);
+    int body_handle = luaL_checknumber(L, 1);
+    cpBody* tmp_body = LIST_At(&cbody, body_handle);
+    cpSpaceReindexShapesForBody(space, tmp_body);
+    return 0;
+}
+static int LUAPROC_ChipmunkAddPinJoint(lua_State* L) {
+    lua_settop(L, -1);
+    int body1_handle = luaL_checknumber(L, 1);
+    int body2_handle = luaL_checknumber(L, 2);
+    cpBody* body1 = LIST_At(&cbody, body1_handle), *body2 = LIST_At(&cbody, body2_handle);
+    cpConstraint* tmp_constraint = cpSpaceAddConstraint(space, cpPinJointNew(body1, body2, cpv(0,0), cpv(0,0)));
+    LIST_AddElement(&cconstraints, tmp_constraint);
+    lua_pushnumber(L, ((double)cconstraints.count) - 1);
+    return 1;
+}
+static int LUAPROC_ChipmunkRemoveConstraint(lua_State* L) { //should be able to remove all types of constraints
+    lua_settop(L, -1);
+    int constraint_handle = luaL_checknumber(L, 1);
+    cpConstraint* tmp_contraint = LIST_At(&cconstraints, constraint_handle);
+    if (tmp_contraint) {
+        cpSpaceRemoveConstraint(space, tmp_contraint);
+        cpConstraintFree(tmp_contraint);
+        LIST_EmptyAt(&cconstraints, constraint_handle);
+    }
+    return 0;
+}
 static int LUAPROC_ChipmunkTimeStep(lua_State* L) {
     lua_settop(L, -1);
-    double frame_rate = luaL_checknumber(L, 1);
-    double timestep = 1.0 / frame_rate;
+    float frame_rate = luaL_checknumber(L, 1);
+    float timestep = 1.0 / frame_rate;
     cpSpaceStep(space, timestep);
     return 0;
 }
@@ -442,38 +585,30 @@ static int LUAPROC_ChipmunkGetBodyInfo(lua_State* L) {
     lua_settop(L, -1);
     float body_handle = luaL_checknumber(L, 1);
     cpBody* tmp_body = LIST_At(&cbody, body_handle);
-    cpVect pos = cpBodyGetPosition(tmp_body);
-    cpVect vel = cpBodyGetVelocity(tmp_body);
-    cpVect* size = cpBodyGetUserData(tmp_body);
-    float radians = cpBodyGetAngle(tmp_body);
-    float angle = radians * (180 / 3.141592);
-    lua_createtable(L, 0, 5);
-    lua_pushnumber(L, pos.x - size->x / 2);
-    lua_setfield(L, 2, "x");
-    lua_pushnumber(L, pos.y - size->y / 2);
-    lua_setfield(L, 2, "y");
-    lua_pushnumber(L, vel .x);
-    lua_setfield(L, 2, "velx");
-    lua_pushnumber(L, vel.y);
-    lua_setfield(L, 2, "vely");
-    lua_pushnumber(L, angle);
-    lua_setfield(L, 2, "angle");
-
-    return 1;
-}
-//TODO: FIX THIS LATER
-static int LUAPROC_ChipmunkQuickIntersectCheck(lua_State* L) {
-    lua_settop(L, -1);
-    luaL_checktype(L, 1, LUA_TTABLE);
-    luaL_checktype(L, 2, LUA_TTABLE);
-    lua_getfield(L, 1, "x"), lua_getfield(L, 1, "y"), lua_getfield(L, 1, "w"), lua_getfield(L, 1, "h");
-    lua_getfield(L, 2, "x"), lua_getfield(L, 2, "y"), lua_getfield(L, 2, "w"), lua_getfield(L, 2, "h");
-    float x1 = luaL_checknumber(L, 3), y1 = luaL_checknumber(L, 4), w1 = luaL_checknumber(L, 5), h1 = luaL_checknumber(L, 6);
-    float x2 = luaL_checknumber(L, 7), y2 = luaL_checknumber(L, 8), w2 = luaL_checknumber(L, 9), h2 = luaL_checknumber(L, 10);
-    cpBB box1 = cpBBNew(x1, (double)y1 + h1, (double)x1 + w1, y1);
-    cpBB box2 = cpBBNew(x2, (double)y2 + h2, (double)x2 + w2, y2);
-    int intersect = cpBBIntersects(box1, box2);
-    lua_pushboolean(L, intersect);
+    if (tmp_body) {
+        cpVect pos = cpBodyGetPosition(tmp_body);
+        cpVect vel = cpBodyGetVelocity(tmp_body);
+        cpVect* size = cpBodyGetUserData(tmp_body);
+        float angularvel = cpBodyGetAngularVelocity(tmp_body);
+        float radians = cpBodyGetAngle(tmp_body);
+        float angle = radians * (180 / 3.141592);
+        lua_createtable(L, 0, 6);
+        lua_pushnumber(L, pos.x - size->x / 2);
+        lua_setfield(L, 2, "x");
+        lua_pushnumber(L, pos.y - size->y / 2);
+        lua_setfield(L, 2, "y");
+        lua_pushnumber(L, vel.x);
+        lua_setfield(L, 2, "velx");
+        lua_pushnumber(L, vel.y);
+        lua_setfield(L, 2, "vely");
+        lua_pushnumber(L, angle);
+        lua_setfield(L, 2, "angle");
+        lua_pushnumber(L, angularvel);
+        lua_setfield(L, 2, "angularvel");
+    }
+    else {
+        lua_pushstring(L, "Error, body was nil");
+    }
     return 1;
 }
 //Audio/mixer functions
@@ -495,6 +630,14 @@ static int LUAPROC_MixerCreateChunk(lua_State* L) {
     lua_pushnumber(L, ((double)chunklists.count) - 1);
     return 1;
 }
+static int LUAPROC_MixerRemoveChunk(lua_State* L) {
+    lua_settop(L, -1);
+    int chunk_handle = luaL_checknumber(L, 1);
+    Mix_Chunk* tmp_chunk = LIST_At(&chunklists, chunk_handle);
+    Mix_FreeChunk(tmp_chunk);
+    LIST_EmptyAt(&chunklists, chunk_handle);
+    return 0;
+}
 static int LUAPROC_MixerVolumeChunk(lua_State* L) {
     lua_settop(L, -1);
     int chunk_handle = luaL_checknumber(L, 1);
@@ -511,6 +654,14 @@ static int LUAPROC_MixerCreateMusic(lua_State* L) {
     LIST_AddElement(&musiclists, tmp_music);
     lua_pushnumber(L, ((double)musiclists.count) - 1);
     return 1;
+}
+static LUAPROC_MixerRemoveMusic(lua_State* L) {
+    lua_settop(L, -1);
+    int music_handle = luaL_checknumber(L, 1);
+    Mix_Music* tmp_music = LIST_At(&musiclists, music_handle);
+    Mix_FreeMusic(tmp_music);
+    LIST_EmptyAt(&musiclists, music_handle);
+    return 0;
 }
 static int LUAPROC_MixerVolumeMusic(lua_State* L) {
     lua_settop(L, -1);
@@ -581,6 +732,7 @@ static int LUAPROC_MathCenterOfRect(lua_State* L) {
 }
 static const struct luaL_reg libprocs[] = {
    {"open_window",LUAPROC_OpenWindow},
+   {"close_window",LUAPROC_CloseWindow},
    {"create_renderer", LUAPROC_CreateGLContext},
    {"clear_window", LUAPROC_ClearWindow},
    {"change_backgroundcolor", LUAPROC_ChangeBackgroundColor},
@@ -588,23 +740,38 @@ static const struct luaL_reg libprocs[] = {
    {"draw_quadfastsheet", LUAPROC_DrawQuadFlyST},
    {"set_glbuffer", LUAPROC_SetDrawBuffer},
    {"draw_glbuffer", LUAPROC_DrawCallBuffer},
+   {"draw_line", LUAPROC_DrawLine},
+   {"camera_move", LUAPROC_MoveCamera},
+   {"camera_getpos", LUAPROC_GetCameraPos},
    {"update_window", LUAPROC_UpdateWindow},
-   {"load_texture", LUAPROC_LoadTexture},   
+   {"load_texture", LUAPROC_LoadTexture},
+   {"remove_texture", LUAPROC_RemoveTexture},
    {"change_glbuffersize", LUAPROC_SetMaxDrawBufferSize},
    {"load_font", LUAPROC_LoadFont},
-   {"generate_fonttexture", LUAPROC_RenderFontFast},
+   {"remove_font", LUAPROC_RemoveFont},
+   {"create_fonttexture", LUAPROC_RenderFontFast},
    {"handle_windowevents", LUAPROC_HandleWindowEvents},
    {"physics_createspace", LUAPROC_CreateChipmunkSpace},
    {"physics_editspace", LUAPROC_EditChipmunkSpace},
    {"physics_addbody", LUAPROC_ChipmunkAddBody},
+   {"physics_removebody", LUAPROC_ChipmunkRemoveBody}, 
    {"physics_timestep", LUAPROC_ChipmunkTimeStep},
    {"physics_getbody", LUAPROC_ChipmunkGetBodyInfo},
    {"physics_setvel", LUAPROC_ChipmunkBodySetVelocty},
-   {"quickphy_rectintersects", LUAPROC_ChipmunkQuickIntersectCheck},
+   {"physics_setangularvel", LUAPROC_ChipmunkBodySetAngularVelocity},
+   {"physics_setfricition", LUAPROC_ChipmunkBodySetFriction},
+   {"physics_setbounce", LUAPROC_ChipmunkBodySetElasticity},
+   {"physics_setsensor", LUAPROC_ChipmunkBodySetSensor},
+   {"physics_setfilter", LUAPROC_ChipmunkSetShapeFilter},
+   {"physics_updatestaticbody", LUAPROC_ChipmunkUpdateStaticBody},
+   {"physics_addpinjoint", LUAPROC_ChipmunkAddPinJoint},
+   {"physics_removecontraint", LUAPROC_ChipmunkRemoveConstraint},
    {"audio_init", LUAPROC_MixerInit},
    {"audio_createchunk", LUAPROC_MixerCreateChunk},
+   {"audio_removechunk", LUAPROC_MixerRemoveChunk},
    {"audio_volumechunk", LUAPROC_MixerVolumeChunk},
    {"audio_createmusic", LUAPROC_MixerCreateMusic},
+   {"audio_removemusic", LUAPROC_MixerRemoveMusic},
    {"audio_volumemusic", LUAPROC_MixerVolumeMusic},
    {"audio_playchunk", LUAPROC_MixerPlayChunk},
    {"audio_playmusic", LUAPROC_MixerPlayMusic},

@@ -105,7 +105,10 @@ void* LIST_At(const linkedList* const list, int location) {
 			//else
 			//	printf("element %d could not be found", location); return 2.0;
 		}
-		return tmp_node->data;
+		if (tmp_node->alloc)
+			return tmp_node->data;
+		else
+			return NULL;
 	}
 	else
 		return NULL;

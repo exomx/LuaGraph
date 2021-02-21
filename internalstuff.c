@@ -62,3 +62,24 @@ void INTERNAL_RotateRectPoints(float* center, float* points, float angle) {
 	points[22] = bottomright[1];
 
 }
+
+void INTERNAL_RemoveAllShapesBody(cpBody* body, cpShape* shape, void* data) {
+	cpSpaceRemoveShape(space, shape);
+	cpShapeFree(shape);
+}
+void INTERNAL_SetFrictionAllShapesBody(cpBody* body, cpShape* shape, void* data) {
+	float* fdata = data;
+	cpShapeSetFriction(shape, *fdata);
+}
+void INTERNAL_SetElasticityAllShapesBody(cpBody* body, cpShape* shape, void* data) {
+	float* fdata = data;
+	cpShapeSetElasticity(shape, *fdata);
+}
+void INTERNAL_SetSensorAllShapesBody(cpBody* body, cpShape* shape, void* data) {
+	int* idata = data;
+	cpShapeSetSensor(shape, *idata);
+}
+void INTERNAL_SetFilterAllShapesBody(cpBody* body, cpShape* shape, void* data) {
+	cpShapeFilter* sfdata = data;
+	cpShapeSetFilter(shape, *sfdata);
+}
