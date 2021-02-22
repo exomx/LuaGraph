@@ -2,188 +2,93 @@ lua_graph = require("luagraph_loader")
 local window_handle, window_error = lua_graph.open_window("cool",800,800);
 local render_handle, render_error, a, b, loc = lua_graph.create_renderer(window_handle)
 
-local mouseloc = {x=0,y=0}
---set up stuff
-font = lua_graph.load_font("arial.ttf")
-test = lua_graph.create_fonttexture(font, "work")
+lua_graph.physics_createspace(0,0.15)
+--player stuff
+local playertext,playertextwidth,playertextheight = lua_graph.load_texture("character_1.png")
+local player_source = {x=0,y=0,w=playertextwidth/2,h=playertextheight,th=playertextheight,tw=playertextwidth}
+local player = {x=0,y=0,w=75,h=75,r=1,g=1,b=1,texture=playertext,angle=0}
+local player_physics = {mass=100,shape=0,friction=0.9,body_type="dynamic",bouncyness=0.1,sensor=false}
+local player_physicsbody = lua_graph.physics_addbody(player, player_physics)
+--world stuff
+local ground = {x=0,y=720,w=800,h=80,r=0,g=0,b=1,texture=0,angle=0}
+local platform = {x=200,y=300,w=400,h=100,r=0,g=0.4,b=0.9,texture=0,angle=0}
+local ground_physics = {mass=100,shape=0,friction=0.7,body_type="static",bouncyness=0.2,sensor=false}
+local tmp_ground_body = lua_graph.physics_addbody(ground,ground_physics)
+local tmp_platform_body = lua_graph.physics_addbody(platform,ground_physics)
+lua_graph.physics_setcollisiontype(tmp_ground_body, 2)
+lua_graph.physics_setcollisiontype(tmp_platform_body, 2)
+--turret
+local turret = {x=750,y=0,w=50,h=20,r=0.5,g=0.5,b=0.5,texture=0,angle=-45}
 
-local testrect = {x=20,y=20, w=100, h=100, r=0, g=1, b=0, texture=test, angle=0}
+--bullets
+local bulletlist = {}
+local bullet_physics = {mass=1,shape=0,friction=1,body_type="dynamic",bouncyness=0,sensor=false}
 
-lua_graph.change_backgroundcolor(1,0,0)
---set up audio
-lua_graph.audio_init(256)
-gunshot = lua_graph.audio_createchunk("gunshot.wav",16)
-
---set up images
-playerpic, twa, tha = lua_graph.load_texture("character_1.png")
-
-deltatime = 1
-cool = {x=0,y=0,w=twa/2,h=tha,tw=twa,th=tha}
-
-player = {x=200,y=200,w=50,h=50, r=1,g=1,b=1, texture=playerpic, angle = 0}
-line = {x=200,y=380,w=300,h=120,r=0.2,g=0.2,b=1,texture=0,angle = 0}
-line2 = {x=0,y=780,w=800,h=20,r=0.2,g=1,b=1,texture=0,angle = 0}
-
-bulletlist = {}
-lastframemouse = false
-lua_graph.physics_createspace(0,0.2)
---shape=1 means circle and shape=0 means rectangle
-physicsthing = {mass=100,shape=0,friction=0.9, body_type="dynamic", bouncyness=0, sensor=false}
-linething = {mass=1,shape=0,friction=0.5, body_type="static",bouncyness=0, sensor=false}
-bulletphy = {mass=1,shape=0,friction=0.01, body_type="dynamic",bouncyness=1, sensor=false}
-
-playerbody = lua_graph.physics_addbody(player, physicsthing)
-linebody = lua_graph.physics_addbody(line, linething)
-line2body = lua_graph.physics_addbody(line2,linething)
-
-tmp_thing = {x=0,y=0}
-joint = lua_graph.physics_addpinjoint(playerbody,linebody,tmp_thing,tmp_thing)
-lua_graph.physics_setfilter(playerbody,7,1,0)
-lua_graph.physics_setfilter(linebody,10,0,1)
-
-removea = false
-function functest()
-removea = true
+function addbullet(pos,inangle)
+local tmp_bullet = {x=pos.x,y=pos.y,w=30,h=10,r=1,g=0.6,b=0,texture=0,angle=inangle}
+local tmp_bullet_body = lua_graph.physics_addbody(tmp_bullet,bullet_physics)
+tmp_bullet.body = tmp_bullet_body
+local tmp_vel = {x=-14,y=0}
+local tmp_acutual_vel = lua_graph.math_rotatevel(tmp_vel, inangle)
+lua_graph.physics_setvel(tmp_bullet_body, tmp_acutual_vel)
+lua_graph.physics_setcollisiontype(tmp_bullet_body, 1)
+bulletlist[tmp_bullet_body] = tmp_bullet
 end
-local testthing = {x=10}
-workpls = lua_graph.script_compile("test.lua")
-lua_graph.script_setuserdata(workpls,"play",lua_graph.audio_playchunk)
-lua_graph.script_setuserdata(workpls,"audio",gunshot)
-workpls2 = lua_graph.script_compile("testother.lua")
-lua_graph.script_setuserdata(workpls2,"destroy",functest)
 
-lua_graph.physics_setcollisiontype(playerbody,10)
-lua_graph.physics_setcollisiontype(linebody,21)
-callbacktest = lua_graph.callback_create(10,21)
-lua_graph.callback_editbeginfunc(callbacktest,workpls2)
-
-
-
-function add_bullet(point, vel, inangle)
-local rect =  {x=point.x,y=point.y,w=20,h=6, r=1,g=1,b=1, texture=0, angle = inangle}
-local tmp_body = lua_graph.physics_addbody(rect, bulletphy)
-rect.body = tmp_body
-local tmp_vel = {x=vel.x,y=vel.y}
-lua_graph.physics_setvel(tmp_body, tmp_vel)
-bulletlist[#bulletlist + 1] = rect
-end
-function handle_bullets(camerax, cameray)
---set up gl buffer
-local glbuffer = {amount=0,texture=0}
+function handlebullets()
 for k,v in pairs(bulletlist) do
---if out of bounds
-if v.x < -80 + camerax or v.x > 880 + camerax or v.y < -5 + cameray or v.y > 805 + cameray then
-lua_graph.physics_removebody(v.body)
-bulletlist[k] = bulletlist[k + 1] -- remove this bullet from this list to be collected and use the next bullet instead
-for i = 1, #bulletlist - k do --see how much of the list is left
-bulletlist[k + i] = bulletlist[k + 1 + i] --shift all the elements over 1 to the left
+if v ~= nil then
+local bullet_tmp_info = lua_graph.physics_getbody(v.body)
+v.x = bullet_tmp_info.x
+v.y = bullet_tmp_info.y
+v.angle = bullet_tmp_info.angle
+lua_graph.draw_quadfast(v)
 end
-end-- continue as normal
-local tmp_bodyinfo = lua_graph.physics_getbody(v.body)
-if type(tmp_bodyinfo) == "table" then
-v.x = tmp_bodyinfo.x
-v.y = tmp_bodyinfo.y
-v.angle = tmp_bodyinfo.angle
 end
-glbuffer[k] = v
 end
-glbuffer.amount = #bulletlist
-lua_graph.change_glbuffersize(#bulletlist + 1)
-lua_graph.set_glbuffer(glbuffer)
-lua_graph.draw_glbuffer()
+local id_to_delete = -1
+function markbullet_fordelete(id)
+	id_to_delete = id
 end
-
-tmp_vel =  {}
-
-local largetest = {x1=player.x + player.w / 2,y1=player.y + player.h / 2,x2=line.x + line.w / 2,y2=line.y + line.h / 2,r=1,g=1,b=1}
-render = true
+--set up bullet callback
+local bullet_script= lua_graph.script_compile("test.lua")
+lua_graph.script_setuserdata(bullet_script, "destroy", markbullet_fordelete)
+local bullet_callback = lua_graph.callback_create(1,2)
+lua_graph.callback_editbeginfunc(bullet_callback, bullet_script)
+--misc
+lastframemouse = false
 
 while true do
-	start = os.clock()
-    keytable, mouse, close = lua_graph.handle_windowevents(window_handle)
-	camx, camy = lua_graph.camera_getpos()
-	lua_graph.physics_timestep(100)
-	if(removea) then
-		lua_graph.physics_removebody(linebody)
-	end
+keytable, mouse, close = lua_graph.handle_windowevents(window_handle)
+lua_graph.physics_timestep(60)
+local player_tmp_body = lua_graph.physics_getbody(player_physicsbody)
+player.x = player_tmp_body.x
+player.y = player_tmp_body.y
+player.angle = player_tmp_body.angle
 
-	work = lua_graph.physics_getbody(playerbody)
-	player.x = work.x
-	player.y = work.y
+if id_to_delete > -1 then
+lua_graph.physics_removebody(id_to_delete)
+bulletlist[id_to_delete] = nil
+end
+--make turret look at player
+local angle_between = lua_graph.math_anglebetween(player,turret)
+turret.angle = angle_between
 
-	tmp_vel.x = work.velx
-	tmp_vel.y = work.vely
-	player.angle = work.angle
-	largetest.x1 = player.x + player.w / 2
-	largetest.y1 = player.y + player.h / 2
-	if close then
-	return;
-	end
-	--player.x = player.x + import.x;
-	--player.y = player.y + import.y;
-	sprintmult = 1
-	if keytable.lshift then
-	sprintmult = 2
-	end
-	if keytable.d then
-	local tmp_vel = {x=0.01 + tmp_vel.x,y=0 + tmp_vel.y}
-	lua_graph.physics_setvel(playerbody, tmp_vel)
-	end
-	if keytable.a then
-	local tmp_vel = {x=-0.01 + tmp_vel.x,y=0 + tmp_vel.y}
-	lua_graph.physics_setvel(playerbody, tmp_vel)
-	end
-	if keytable.w then
-	local tmp_vel = {x=0 + tmp_vel.x,y=-0.01 + tmp_vel.y}
-	lua_graph.physics_setvel(playerbody, tmp_vel)
-	end
-	if keytable.s then
-	local tmp_vel = {x=0 + tmp_vel.x,y=0.01 + tmp_vel.y}
-	lua_graph.physics_setvel(playerbody, tmp_vel)
-	end
-	if keytable.f then
-		if cool.x == cool.w then
-		cool.x = 0
-		else
-		cool.x = cool.w
-		end
-	end
-	--note: DO NOT MAKE CAMERA COORDNIATES A DECIMAL EVER
-	if keytable.g then
-		lua_graph.physics_removecontraint(joint)
-		render = false
-	end
-	lua_graph.camera_move(math.floor(player.x + player.w / 2 - 400), math.floor(player.y + player.h / 2 - 400))
-
-	--do this so the player always looks at the mouse
-	--local player_center = lua_graph.math_getcenter(player)
-	--player.angle = lua_graph.math_anglebetween(player_center, mouse)
-	if mouse.left then
-	--lua_graph.audio_playchunk(gunshot,0)
-	local tmp_point = lua_graph.math_getcenter(player)
-	local tmp_vel = {x=20,y=0}
-	local angle = lua_graph.math_anglebetween(tmp_point, mouse)
-    local tmp_outputvel = lua_graph.math_rotatevel(tmp_vel, angle)
-	tmp_point.x = tmp_point.x - 30
-	tmp_point.y = tmp_point.y - 2.5
-	add_bullet(tmp_point,tmp_outputvel,angle)
-	end
-	lua_graph.clear_window()
-	handle_bullets(camx,camy)
-	lua_graph.draw_quadfastsheet(player,cool)
-	lua_graph.draw_quadfast(line)
-	lua_graph.draw_quadfast(line2)
-	lua_graph.draw_quadfast(testrect)
-	if render then
-	lua_graph.draw_line(largetest)
-	end
-	lua_graph.update_window(window_handle)
-
-	deltatime = start - os.clock()
-	if deltatime == 0 then
-	deltatime = 0.001
-	end
-	lastframemouse = mouse.left
+if mouse.left and lastframemouse == false then
+addbullet(turret,turret.angle)
 end
 
-return 10
+lua_graph.clear_window()
+lua_graph.draw_quadfastsheet(player, player_source)
+lua_graph.draw_quadfast(ground)
+lua_graph.draw_quadfast(platform)
+lua_graph.draw_quadfast(turret)
+handlebullets()
+lua_graph.update_window(window_handle)
+
+
+if close then
+return
+end
+lastframemouse = mouse.left
+end

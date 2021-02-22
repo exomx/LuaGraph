@@ -17,8 +17,8 @@ GLint default_shaders;
 void INTERNAL_RemoveBodyFunc(int body_handle) {
     cpBody* tmp_body = LIST_At(&cbody, body_handle);
     if (tmp_body) {
-        int* index = cpBodyGetUserData(tmp_body);
-        free(index);
+        cbodyarry* cba = cpBodyGetUserData(tmp_body);
+        free(cba);
         cpBodyEachShape(tmp_body, INTERNAL_RemoveAllShapesBody, NULL);
         cpSpaceRemoveBody(space, tmp_body);
         cpBodyFree(tmp_body);
@@ -470,13 +470,7 @@ static int LUAPROC_ChipmunkAddBody(lua_State* L) {
     else
         momentum = cpMomentForCircle(mass, 0, w / 2, cpv(0, 0));
     cpBody* tmp_body = cpSpaceAddBody(space, cpBodyNew(mass, momentum));
-    int* index = calloc(1, sizeof(int));
-    *index = cbody.count - 1;
-    cpBodySetUserData(tmp_body, index);
     cpBodySetPosition(tmp_body, cpv(x + w/2,y + h/2));
-    cpVect* size = calloc(1, sizeof(cpVect));
-    size->x = w, size->y = h;
-    cpBodySetUserData(tmp_body, size);
     cpBodySetAngle(tmp_body, radians);
     //convert type to actual type
     if (type[0] == 'k')
@@ -496,6 +490,11 @@ static int LUAPROC_ChipmunkAddBody(lua_State* L) {
     if (sensor)
         cpShapeSetSensor(tmp_shape, sensor);
     LIST_AddElement(&cbody, tmp_body);
+    cpVect size = { w,h };
+    int index = cbody.count - 1;
+    cbodyarry* cba = calloc(1, sizeof(cbodyarry));
+    cba->vec = size, cba->id = index;
+    cpBodySetUserData(tmp_body, cba);
     lua_pushnumber(L, (double)cbody.count - 1);
     return 1;
 }
@@ -504,8 +503,8 @@ static int LUAPROC_ChipmunkRemoveBody(lua_State* L) {
     int body_handle = luaL_checknumber(L, 1);
     cpBody* tmp_body = LIST_At(&cbody, body_handle);
     if (tmp_body) {
-        int* index = cpBodyGetUserData(tmp_body);
-        free(index);
+        cbodyarry* cba = cpBodyGetUserData(tmp_body);
+        free(cba);
         cpBodyEachShape(tmp_body, INTERNAL_RemoveAllShapesBody, NULL);
         cpSpaceRemoveBody(space, tmp_body);
         cpBodyFree(tmp_body);
@@ -906,14 +905,15 @@ static int LUAPROC_ChipmunkGetBodyInfo(lua_State* L) {
     if (tmp_body) {
         cpVect pos = cpBodyGetPosition(tmp_body);
         cpVect vel = cpBodyGetVelocity(tmp_body);
-        cpVect* size = cpBodyGetUserData(tmp_body);
+        cbodyarry* cba = cpBodyGetUserData(tmp_body);
+        cpVect size = cba->vec;
         float angularvel = cpBodyGetAngularVelocity(tmp_body);
         float radians = cpBodyGetAngle(tmp_body);
         float angle = radians * (180 / 3.141592);
         lua_createtable(L, 0, 6);
-        lua_pushnumber(L, pos.x - size->x / 2);
+        lua_pushnumber(L, pos.x - size.x / 2);
         lua_setfield(L, 2, "x");
-        lua_pushnumber(L, pos.y - size->y / 2);
+        lua_pushnumber(L, pos.y - size.y / 2);
         lua_setfield(L, 2, "y");
         lua_pushnumber(L, vel.x);
         lua_setfield(L, 2, "velx");

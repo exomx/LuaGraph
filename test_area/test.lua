@@ -1,3 +1,2 @@
-print("first contact")
-play(audio,0)
-return true
+destroy(collision.colliderid)
+return false

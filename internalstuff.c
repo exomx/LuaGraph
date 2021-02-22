@@ -105,6 +105,13 @@ cpBool INTERNAL_CollisionBeginFunc(cpArbiter* arb, cpSpace* space, cpDataPointer
 	cpBody* tmp_bodyA, *tmp_bodyB;
 	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
 	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
+	cbodyarry* cbaa = cpBodyGetUserData(tmp_bodyA), *cbab = cpBodyGetUserData(tmp_bodyB);
+	
+	lua_pushnumber(L, cbaa->id);
+	lua_setfield(L, 1, "colliderid");
+	lua_pushnumber(L, cbab->id);
+	lua_setfield(L, 1, "collidedid");
+
 	lua_pushnumber(L, tmp_bodyAVel.x);
 	lua_setfield(L, 1, "collider_velx");
 
@@ -154,6 +161,12 @@ cpBool INTERNAL_CollisionPreFunc(cpArbiter* arb, cpSpace* space, cpDataPointer u
 	cpBody* tmp_bodyA, * tmp_bodyB;
 	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
 	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
+	cbodyarry* cbaa = cpBodyGetUserData(tmp_bodyA), * cbab = cpBodyGetUserData(tmp_bodyB);
+	lua_pushnumber(L, cbaa->id);
+	lua_setfield(L, 1, "colliderid");
+	lua_pushnumber(L, cbab->id);
+	lua_setfield(L, 1, "collidedid");
+
 	lua_pushnumber(L, tmp_bodyAVel.x);
 	lua_setfield(L, 1, "collider_velx");
 
@@ -202,11 +215,13 @@ void INTERNAL_CollisionPostFunc(cpArbiter* arb, cpSpace* space, cpDataPointer us
 	lua_setfield(L, 1, "collision_count");
 	cpBody* tmp_bodyA, * tmp_bodyB;
 	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
-	int* indexa = cpBodyGetUserData(tmp_bodyA), *indexb = cpBodyGetUserData(tmp_bodyB);
-	lua_pushnumber(L, *indexa);
+
+	cbodyarry* cbaa = cpBodyGetUserData(tmp_bodyA), *cbab = cpBodyGetUserData(tmp_bodyB);
+	lua_pushnumber(L, cbaa->id);
 	lua_setfield(L, 1, "colliderid");
-	lua_pushnumber(L, *indexb);
+	lua_pushnumber(L,  cbab->id);
 	lua_setfield(L, 1, "collidedid");
+
 	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
 	lua_pushnumber(L, tmp_bodyAVel.x);
 	lua_setfield(L, 1, "collider_velx");
@@ -257,10 +272,10 @@ void INTERNAL_CollisionSeperateFunc(cpArbiter* arb, cpSpace* space, cpDataPointe
 	lua_setfield(L, 1, "collision_count");
 	cpBody* tmp_bodyA, * tmp_bodyB;
 	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
-	int* indexa = cpBodyGetUserData(tmp_bodyA), * indexb = cpBodyGetUserData(tmp_bodyB);
-	lua_pushnumber(L, *indexa);
+	cbodyarry* cbaa = cpBodyGetUserData(tmp_bodyA), * cbab = cpBodyGetUserData(tmp_bodyB);
+	lua_pushnumber(L, cbaa->id);
 	lua_setfield(L, 1, "colliderid");
-	lua_pushnumber(L, *indexb);
+	lua_pushnumber(L, cbab->id);
 	lua_setfield(L, 1, "collidedid");
 	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
 	lua_pushnumber(L, tmp_bodyAVel.x);

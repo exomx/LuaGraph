@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <string.h>
+#include <stdio.h>
 #include <cglm/cglm.h>
 #include <lua/luaconf.h>
 #include <lua/lua.h>
@@ -22,6 +23,11 @@ struct luastatearray {
 	lua_State* state4;
 };
 typedef struct luastatearray luastatearray;
+struct cbodyarry {
+	cpVect vec;
+	int id;
+};
+typedef struct cbodyarry cbodyarry;
 
 //internal prototypes
 extern float* INTERNAL_RotatePoint(float cx, float cy, float px, float py, float angle);
