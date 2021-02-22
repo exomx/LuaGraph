@@ -104,8 +104,16 @@ cpBool INTERNAL_CollisionBeginFunc(cpArbiter* arb, cpSpace* space, cpDataPointer
 	cpBody* tmp_bodyA, *tmp_bodyB;
 	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
 	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
+	float tmp_bodyAradians = cpBodyGetAngle(tmp_bodyA), tmp_bodyBradians = cpBodyGetAngle(tmp_bodyB);
+	float tmp_bodyAangle = tmp_bodyAradians * (180 / 3.141592), tmp_bodyBangle = tmp_bodyBradians * (180 / 3.141592);
 	cbodyarry* cbaa = cpBodyGetUserData(tmp_bodyA), *cbab = cpBodyGetUserData(tmp_bodyB);
 	
+	lua_pushnumber(L, tmp_bodyAangle);
+	lua_setfield(L, 1, "collider_angle");
+
+	lua_pushnumber(L, tmp_bodyBangle);
+	lua_setfield(L, 1, "collided_angle");
+
 	lua_pushnumber(L, cbaa->id);
 	lua_setfield(L, 1, "colliderid");
 	lua_pushnumber(L, cbab->id);
@@ -168,6 +176,14 @@ cpBool INTERNAL_CollisionPreFunc(cpArbiter* arb, cpSpace* space, cpDataPointer u
 	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
 	cpVect tmp_bodyAVel = cpBodyGetVelocity(tmp_bodyA), tmp_bodyBVel = cpBodyGetVelocity(tmp_bodyB);
 	cbodyarry* cbaa = cpBodyGetUserData(tmp_bodyA), * cbab = cpBodyGetUserData(tmp_bodyB);
+	float tmp_bodyAradians = cpBodyGetAngle(tmp_bodyA), tmp_bodyBradians = cpBodyGetAngle(tmp_bodyB);
+	float tmp_bodyAangle = tmp_bodyAradians * (180 / 3.141592), tmp_bodyBangle = tmp_bodyBradians * (180 / 3.141592);
+
+	lua_pushnumber(L, tmp_bodyAangle);
+	lua_setfield(L, 1, "collider_angle");
+
+	lua_pushnumber(L, tmp_bodyBangle);
+	lua_setfield(L, 1, "collided_angle");
 	lua_pushnumber(L, cbaa->id);
 	lua_setfield(L, 1, "colliderid");
 	lua_pushnumber(L, cbab->id);
@@ -226,6 +242,15 @@ void INTERNAL_CollisionPostFunc(cpArbiter* arb, cpSpace* space, cpDataPointer us
 	lua_setfield(L, 1, "collision_count");
 	cpBody* tmp_bodyA, * tmp_bodyB;
 	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
+
+	float tmp_bodyAradians = cpBodyGetAngle(tmp_bodyA), tmp_bodyBradians = cpBodyGetAngle(tmp_bodyB);
+	float tmp_bodyAangle = tmp_bodyAradians * (180 / 3.141592), tmp_bodyBangle = tmp_bodyBradians * (180 / 3.141592);
+
+	lua_pushnumber(L, tmp_bodyAangle);
+	lua_setfield(L, 1, "collider_angle");
+
+	lua_pushnumber(L, tmp_bodyBangle);
+	lua_setfield(L, 1, "collided_angle");
 
 	cbodyarry* cbaa = cpBodyGetUserData(tmp_bodyA), *cbab = cpBodyGetUserData(tmp_bodyB);
 	lua_pushnumber(L, cbaa->id);
@@ -292,6 +317,15 @@ void INTERNAL_CollisionSeperateFunc(cpArbiter* arb, cpSpace* space, cpDataPointe
 	cpBody* tmp_bodyA, * tmp_bodyB;
 	cpArbiterGetBodies(arb, &tmp_bodyA, &tmp_bodyB);
 	cbodyarry* cbaa = cpBodyGetUserData(tmp_bodyA), * cbab = cpBodyGetUserData(tmp_bodyB);
+	float tmp_bodyAradians = cpBodyGetAngle(tmp_bodyA), tmp_bodyBradians = cpBodyGetAngle(tmp_bodyB);
+	float tmp_bodyAangle = tmp_bodyAradians * (180 / 3.141592), tmp_bodyBangle = tmp_bodyBradians * (180 / 3.141592);
+
+	lua_pushnumber(L, tmp_bodyAangle);
+	lua_setfield(L, 1, "collider_angle");
+
+	lua_pushnumber(L, tmp_bodyBangle);
+	lua_setfield(L, 1, "collided_angle");
+
 	lua_pushnumber(L, cbaa->id);
 	lua_setfield(L, 1, "colliderid");
 	lua_pushnumber(L, cbab->id);
