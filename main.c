@@ -508,8 +508,8 @@ static int LUAPROC_ChipmunkRemoveBody(lua_State* L) {
         cpBodyEachShape(tmp_body, INTERNAL_RemoveAllShapesBody, NULL);
         cpSpaceRemoveBody(space, tmp_body);
         cpBodyFree(tmp_body);
+        LIST_EmptyAt(&cbody, body_handle);
     }
-    LIST_EmptyAt(&cbody, body_handle);
     return 0;
 }
 static int LUAPROC_ChipmunkSetBodyType(lua_State* L) {
@@ -866,7 +866,7 @@ static int LUAPROC_CompileScript(lua_State* L) {
     lua_State* tmp_L = lua_open();
     luaL_openlibs(tmp_L);
     luaL_loadfile(tmp_L, filename);
-    lua_setglobal(tmp_L, "script");
+    lua_setglobal(tmp_L, "CALLSCRIPT");
     filename = NULL; //for garabge collection
     LIST_AddElement(&lua_statelist, tmp_L);
     lua_pushnumber(L, (double)lua_statelist.count - 1);

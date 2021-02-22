@@ -97,8 +97,7 @@ cpBool INTERNAL_CollisionBeginFunc(cpArbiter* arb, cpSpace* space, cpDataPointer
 	luastatearray* lsa = userData;
 	lua_State* L = lsa->state1;
 	lua_settop(L, 0);
-	lua_createtable(L, 0, 5);
-
+	lua_createtable(L, 0, 13);
 	int tmp_count = cpArbiterGetCount(arb);
 	lua_pushnumber(L, tmp_count);
 	lua_setfield(L, 1, "collision_count");
@@ -142,10 +141,17 @@ cpBool INTERNAL_CollisionBeginFunc(cpArbiter* arb, cpSpace* space, cpDataPointer
 	lua_pushnumber(L, cpArbiterIsFirstContact(arb));
 	lua_setfield(L, 1, "firstcontact");
 	lua_setglobal(L, "collision");
-	lua_getglobal(L, "script");
-	lua_pcall(L, 0, 1, 0);
-	int returnval = lua_toboolean(L, 1);
+	printf("Before Kb:%d\n",lua_gc(L, LUA_GCCOUNT, 1));
+	if (lua_gc(L, LUA_GCCOUNT, 1) > 25) {
+		lua_gc(L, LUA_GCCOLLECT, 1);
+		printf("After Kb:%d\n", lua_gc(L, LUA_GCCOUNT, 1));
+	}
 	lua_settop(L, 0);
+	lua_getglobal(L, "CALLSCRIPT");
+	luaL_checktype(L, 1, LUA_TFUNCTION);
+	lua_call(L, 0, 1);
+	int returnval = lua_toboolean(L, 1);
+	
 	return returnval;
 }
 
@@ -153,7 +159,7 @@ cpBool INTERNAL_CollisionPreFunc(cpArbiter* arb, cpSpace* space, cpDataPointer u
 	luastatearray* lsa = userData;
 	lua_State* L = lsa->state2;
 	lua_settop(L, 0);
-	lua_createtable(L, 0, 5);
+	lua_createtable(L, 0, 13);
 
 	int tmp_count = cpArbiterGetCount(arb);
 	lua_pushnumber(L, tmp_count);
@@ -197,18 +203,23 @@ cpBool INTERNAL_CollisionPreFunc(cpArbiter* arb, cpSpace* space, cpDataPointer u
 	lua_setfield(L, 1, "firstcontact");
 
 	lua_setglobal(L, "collision");
-	lua_getglobal(L, "script");
-	lua_pcall(L, 0, 1, 0);
-
-	int returnval = lua_toboolean(L, 1);
+	printf("Before Kb:%d\n", lua_gc(L, LUA_GCCOUNT, 1));
+	if (lua_gc(L, LUA_GCCOUNT, 1) > 25) {
+		lua_gc(L, LUA_GCCOLLECT, 1);
+		printf("After Kb:%d\n", lua_gc(L, LUA_GCCOUNT, 1));
+	}
 	lua_settop(L, 0);
+	lua_getglobal(L, "CALLSCRIPT");
+	luaL_checktype(L, 1, LUA_TFUNCTION);
+	lua_call(L, 0, 1);
+	int returnval = lua_toboolean(L, 1);
 	return returnval;
 }
 void INTERNAL_CollisionPostFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData) {
 	luastatearray* lsa = userData;
 	lua_State* L = lsa->state3;
 	lua_settop(L, 0);
-	lua_createtable(L, 0, 5);
+	lua_createtable(L, 0, 13);
 
 	int tmp_count = cpArbiterGetCount(arb);
 	lua_pushnumber(L, tmp_count);
@@ -256,16 +267,24 @@ void INTERNAL_CollisionPostFunc(cpArbiter* arb, cpSpace* space, cpDataPointer us
 	lua_setfield(L, 1, "impusex");
 	lua_pushnumber(L, tmp_impulse_vec.y);
 	lua_setfield(L, 1, "impusey");
-	
+
 	lua_setglobal(L, "collision");
-	lua_getglobal(L, "script");
-	lua_pcall(L, 0, 0, 0);
+	printf("Before Kb:%d\n", lua_gc(L, LUA_GCCOUNT, 1));
+	if (lua_gc(L, LUA_GCCOUNT, 1) > 25) {
+		lua_gc(L, LUA_GCCOLLECT, 1);
+		printf("After Kb:%d\n", lua_gc(L, LUA_GCCOUNT, 1));
+	}
+	lua_settop(L, 0);
+	lua_getglobal(L, "CALLSCRIPT");
+	luaL_checktype(L, 1, LUA_TFUNCTION);
+	lua_call(L, 0, 0);
+
 }
 void INTERNAL_CollisionSeperateFunc(cpArbiter* arb, cpSpace* space, cpDataPointer userData) {
 	luastatearray* lsa = userData;
 	lua_State* L = lsa->state4;
 	lua_settop(L, 0);
-	lua_createtable(L, 0, 5);
+	lua_createtable(L, 0, 13);
 
 	int tmp_count = cpArbiterGetCount(arb);
 	lua_pushnumber(L, tmp_count);
@@ -315,6 +334,13 @@ void INTERNAL_CollisionSeperateFunc(cpArbiter* arb, cpSpace* space, cpDataPointe
 	lua_pushboolean(L, cpArbiterIsRemoval(arb));
 	lua_setfield(L, 1, "removal");
 	lua_setglobal(L, "collision");
-	lua_getglobal(L, "script");
-	lua_pcall(L, 0, 0, 0);
+	printf("Before Kb:%d\n", lua_gc(L, LUA_GCCOUNT, 1));
+	if (lua_gc(L, LUA_GCCOUNT, 1) > 25) {
+		lua_gc(L, LUA_GCCOLLECT, 1);
+		printf("After Kb:%d\n", lua_gc(L, LUA_GCCOUNT, 1));
+	}
+	lua_settop(L, 0);
+	lua_getglobal(L, "CALLSCRIPT");
+	luaL_checktype(L, 1, LUA_TFUNCTION);
+	lua_call(L, 0, 0);
 }

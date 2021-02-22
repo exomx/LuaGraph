@@ -1,0 +1,2 @@
+kill(true)
+return false
