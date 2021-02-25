@@ -24,14 +24,20 @@ C:\Users\Light\source\repos\luagraph\internalstuff.c(108,1): warning C4244: 'ini
 C:\Users\Light\source\repos\luagraph\internalstuff.c(179,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\internalstuff.c(180,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\internalstuff.c(234,89): warning C4142: 'INTERNAL_CollisionPostFunc': benign redefinition of type
-C:\Users\Light\source\repos\luagraph\mainheader.h(49): message : see declaration of 'INTERNAL_CollisionPostFunc'
+C:\Users\Light\source\repos\luagraph\mainheader.h(84): message : see declaration of 'INTERNAL_CollisionPostFunc'
 C:\Users\Light\source\repos\luagraph\internalstuff.c(246,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\internalstuff.c(247,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\internalstuff.c(320,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
 C:\Users\Light\source\repos\luagraph\internalstuff.c(321,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\internalstuff.c(390,39): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\luagraph\internalstuff.c(390,35): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\luagraph\internalstuff.c(429,80): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\luagraph\internalstuff.c(437,32): warning C4090: 'function': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\internalstuff.c(438,32): warning C4090: 'function': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\internalstuff.c(439,35): warning C4090: 'function': different 'const' qualifiers
      Creating library C:\Users\Light\source\repos\luagraph\Release\luagraph.lib and object C:\Users\Light\source\repos\luagraph\Release\luagraph.exp
   Generating code
-  8 of 987 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+  1 of 997 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code

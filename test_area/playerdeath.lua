@@ -1,2 +1,2 @@
-kill(true)
+kill(true,death)
 return false

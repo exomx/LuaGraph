@@ -4,4 +4,4 @@ tmp_vector = rotatevel(tmp_vector,tmp_angle)
 
 setvel(tmp_vector.x,tmp_vector.y,collision.colliderid,tmp_angle + 90)
 play(rico,0)
-return false
+return true

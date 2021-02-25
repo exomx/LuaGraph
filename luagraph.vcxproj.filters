@@ -24,6 +24,9 @@
     <ClCompile Include="internalstuff.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="queue.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mainheader.h">

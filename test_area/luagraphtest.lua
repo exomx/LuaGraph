@@ -1,6 +1,8 @@
-dlua_graph = require("luagraph_loader")
+lua_graph = require("luagraph_loader")
 local window_handle, window_error = lua_graph.open_window("cool",800,800);
 local render_handle, render_error, a, b, loc = lua_graph.create_renderer(window_handle)
+
+lua_graph.debug_togglefeatures(true,true,true,true)
 
 --up here I guess
 local bulletlist = {}
@@ -21,9 +23,9 @@ end
 
 --set up audio
 lua_graph.audio_init(20)
-gunshot = lua_graph.audio_createchunk("gunshot.wav", 1)
-rico = lua_graph.audio_createchunk("rico.wav", 1)
-death = lua_graph.audio_createchunk("death.mp3",1)
+gunshot = lua_graph.audio_createchunk("gunshot.wav", 16)
+rico = lua_graph.audio_createchunk("rico.wav", 16)
+death = lua_graph.audio_createchunk("death.mp3",16)
 
 --death screen
 arial = lua_graph.load_font("arial.ttf")
@@ -61,7 +63,7 @@ lua_graph.script_setuserdata(shield_script,"rotatevel",lua_graph.math_rotatevel)
 lua_graph.script_setuserdata(shield_script, "play", lua_graph.audio_playchunk)
 lua_graph.script_setuserdata(shield_script, "rico", rico)
 local shield_callback = lua_graph.callback_create(1,5)
-lua_graph.callback_editprefunc(shield_callback,shield_script)
+lua_graph.callback_editbeginfunc(shield_callback,shield_script)
 
 function player_setonground(answer)
 	player_onground = answer
@@ -80,7 +82,6 @@ lua_graph.callback_editseperatefunc(player_callback, player_script_stoptouch)
 dead = false
 function killplayer(bool)
 dead = bool
-lua_graph.audio_playchunk(death,0)
 end
 
 local player_death_script = lua_graph.script_compile("playerdeath.lua")
@@ -231,7 +232,7 @@ end
 local angle_between = lua_graph.math_anglebetween(player,turret)
 turret.angle = angle_between
 
-if count > 2000 and not dead then
+if count > 500 and not dead then
 addbullet(turret,turret.angle)
 lua_graph.audio_playchunk(gunshot,0)
 count = 0
@@ -247,6 +248,7 @@ lua_graph.draw_line(line_table)
 lua_graph.draw_quadfast(shield)
 handlebullets()
 if dead then
+lua_graph.audio_playchunk(death,0)
 lua_graph.camera_move(0,0)
 lua_graph.draw_quadfast(black_background)
 lua_graph.draw_quadfast(text_rect)

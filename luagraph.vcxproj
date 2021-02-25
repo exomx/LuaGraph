@@ -156,6 +156,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="internalstuff.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="queue.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\auxh\linkedlist_h.h" />
