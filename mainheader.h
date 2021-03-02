@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <windows.h> //Might as well fully commit to windows
 #include <cglm/cglm.h>
 #include <lua/luaconf.h>
 #include <lua/lua.h>
@@ -50,6 +50,19 @@ struct queue {
 };
 typedef struct queue queue;
 extern queue debugq;
+typedef struct listNode listNode;
+struct listNode {
+	listNode* next, * prev;
+	void* data;
+	int alloc;
+};
+typedef struct linkedList linkedList;
+struct linkedList {
+	listNode* head;
+	int count;
+};
+//global lists
+extern linkedList cbody, cconstraints, lua_statelist, collisioncallbacks;
 //global null texture
 extern GLint null_tex;
 //global white
@@ -75,7 +88,7 @@ extern void INTERNAL_SetFilterAllShapesBody(cpBody* body, cpShape* shape, void* 
 extern void INTERNAL_SetSurfaceVelocityAllShapesBody(cpBody* body, cpShape* shape, void* data);
 extern void INTERNAL_SetCollisionTypeAllShapesBody(cpBody* body, cpShape* shape, void* data);
 extern void INTERNAL_RemoveBodyFunc(int body_handle);
-extern void INTERNAL_DrawQuadFly(float x, float y, float w, float h, float r, float g, float b, GLint texture_id, float angle);
+extern void INTERNAL_DrawQuadFly(float x, float y, float w, float h, float r, float g, float b, GLint texture_id, float angle, int flipy);
 
 //collision dectection
 

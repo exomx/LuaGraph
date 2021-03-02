@@ -379,12 +379,22 @@ void INTERNAL_CollisionSeperateFunc(cpArbiter* arb, cpSpace* space, cpDataPointe
 	lua_call(L, 0, 0);
 }
 //Quck render function
-void INTERNAL_DrawQuadFly(float x, float y, float w, float h, float r, float g, float b, GLint texture_id, float angle) { //fly meaning "on the fly"
+void INTERNAL_DrawQuadFly(float x, float y, float w, float h, float r, float g, float b, GLint texture_id, float angle, int flipy) { //fly meaning "on the fly"
 	if (texture_id)
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 	else
 		glBindTexture(GL_TEXTURE_2D, null_tex);
-	float tmp_vertexes[28] = { x,y + h, r, g, b, 0, 1, x,y, r, g, b, 0, 0, x + w, y, r, g, b, 1, 0, x + w,y + h, r, g, b, 1, 1 }; //create correct points for quad
+
+	float *tmp_vertexes;
+	if (!flipy) {
+		float tmp_vertexes_d[28] = { x,y + h, r, g, b, 0, 1, x,y, r, g, b, 0, 0, x + w, y, r, g, b, 1, 0, x + w,y + h, r, g, b, 1, 1 }; //create correct points for quad
+		tmp_vertexes = tmp_vertexes_d;
+	}
+	else {
+		float tmp_vertexes_d[28] = { x,y + h, r, g, b, 0, 1, x,y, r, g, b, 0, 0, x + w, y, r, g, b, 1, 0, x + w,y + h, r, g, b, 1, 1 }; //create correct points for quad
+		tmp_vertexes = tmp_vertexes_d;
+	}
+
 	float* center_points = INTERNAL_GetCenterRect(x, y, w, h);
 	INTERNAL_RotateRectPoints(center_points, tmp_vertexes, angle);
 	glBufferSubData(GL_ARRAY_BUFFER, NULL, sizeof(float) * 28, tmp_vertexes); //the first spot is reserved for this function call
@@ -444,16 +454,16 @@ void DEBUG_Handle(void) {
 	}
 	//render
 	if (header_tex != -1 && show_errors_screen && (!warn)) { //find a way to keep the errors from going offscreen and maybe make it write to a log file, too
-		INTERNAL_DrawQuadFly(600 - camcoord[1], 700 - camcoord[2], 200, 100, r, g, 0, 0, 0);
-		INTERNAL_DrawQuadFly(670 - camcoord[1], 705 - camcoord[2], 60, 20, 1, 1, 1, header_tex, 0);
-		INTERNAL_DrawQuadFly(610 - camcoord[1], 730 - camcoord[2], 180, 12, 1, 1, 1, function_tex, 0);
-		INTERNAL_DrawQuadFly(610 - camcoord[1], 747 - camcoord[2], 180, 12, 1, 1, 1, synopsis_tex, 0);
+		INTERNAL_DrawQuadFly(600 - camcoord[1], 700 - camcoord[2], 200, 100, r, g, 0, 0, 0, 0);
+		INTERNAL_DrawQuadFly(670 - camcoord[1], 705 - camcoord[2], 60, 20, 1, 1, 1, header_tex, 0, 0);
+		INTERNAL_DrawQuadFly(610 - camcoord[1], 730 - camcoord[2], 180, 12, 1, 1, 1, function_tex, 0, 0);
+		INTERNAL_DrawQuadFly(610 - camcoord[1], 747 - camcoord[2], 180, 12, 1, 1, 1, synopsis_tex, 0, 0);
 	}
 	else if (header_tex != -1 && show_warnings_screen && warn) {
-		INTERNAL_DrawQuadFly(600 - camcoord[1], 700 - camcoord[2], 200, 100, r, g, 0, 0, 0);
-		INTERNAL_DrawQuadFly(670 - camcoord[1], 705 - camcoord[2], 60, 20, 1, 1, 1, header_tex, 0);
-		INTERNAL_DrawQuadFly(610 - camcoord[1], 730 - camcoord[2], 180, 12, 1, 1, 1, function_tex, 0);
-		INTERNAL_DrawQuadFly(610 - camcoord[1], 747 - camcoord[2], 180, 12, 1, 1, 1, synopsis_tex, 0);
+		INTERNAL_DrawQuadFly(600 - camcoord[1], 700 - camcoord[2], 200, 100, r, g, 0, 0, 0, 0);
+		INTERNAL_DrawQuadFly(670 - camcoord[1], 705 - camcoord[2], 60, 20, 1, 1, 1, header_tex, 0, 0);
+		INTERNAL_DrawQuadFly(610 - camcoord[1], 730 - camcoord[2], 180, 12, 1, 1, 1, function_tex, 0, 0);
+		INTERNAL_DrawQuadFly(610 - camcoord[1], 747 - camcoord[2], 180, 12, 1, 1, 1, synopsis_tex, 0, 0);
 	}
 
 	if (debugq.tail) {

@@ -3,7 +3,8 @@ local window_handle, window_error = lua_graph.open_window("cool",800,800);
 local render_handle, render_error, a, b, loc = lua_graph.create_renderer(window_handle)
 
 lua_graph.debug_togglefeatures(true,true,true,true)
-
+screenid = lua_graph.getscreen()
+local render_texture = {x=0,y=200,w=200,h=-200,r=1,g=1,b=1,texture=screenid,angle=0}
 --up here I guess
 local bulletlist = {}
 --change background
@@ -165,7 +166,8 @@ lua_graph.callback_editbeginfunc(bullet_callback, bulletbullet_script)
 lastframemouse = false
 count = 0
 
-
+playervelx = 0
+playervely = 0
 while true do
 keytable, mouse, close = lua_graph.handle_windowevents(window_handle)
 if id > -1 then
@@ -179,6 +181,8 @@ local player_tmp_body = lua_graph.physics_getbody(player_physicsbody)
 player.x = player_tmp_body.x
 player.y = player_tmp_body.y
 lua_graph.physics_setangle(player_physicsbody,0)
+playervelx = player_tmp_body.velx
+playervely = player_tmp_body.vely
 
 local spikeball_tmpbody = lua_graph.physics_getbody(spike_ball_body)
 spike_ball.x = spikeball_tmpbody.x
@@ -191,10 +195,9 @@ line_table.x1 = spike_ball_center.x
 line_table.y1 = spike_ball_center.y
 
 --control camera movement
-lua_graph.camera_move(player.x - 400, player.y - 400)
---get camera position
 local camx, camy = lua_graph.camera_getpos()
-
+lua_graph.camera_move(player.x - 400, player.y - 400)
+print(camx)
 if keytable.d then
 local tmp_player_vel = {x=player_tmp_body.velx + 0.02,y=player_tmp_body.vely}
 lua_graph.physics_setvel(player_physicsbody, tmp_player_vel)
@@ -253,6 +256,7 @@ lua_graph.camera_move(0,0)
 lua_graph.draw_quadfast(black_background)
 lua_graph.draw_quadfast(text_rect)
 end
+lua_graph.draw_quadfast(render_texture)
 lua_graph.update_window(window_handle)
 
 

@@ -1,4 +1,4 @@
-﻿  internalstuff.c
+﻿  main.c
 C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(386,21): warning C4013: 'glm_max' undefined; assuming extern returning int
 C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(402,21): warning C4013: 'glm_min' undefined; assuming extern returning int
 C:\Users\Light\source\repos\luagraph\include\cglm\vec2.h(507,18): warning C4013: 'glm_pow2' undefined; assuming extern returning int
@@ -17,28 +17,242 @@ C:\Users\Light\source\repos\luagraph\include\cglm\util.h(130,27): warning C4142:
 C:\Users\Light\source\repos\luagraph\include\cglm\util.h(144,27): warning C4142: 'glm_max': benign redefinition of type
 C:\Users\Light\source\repos\luagraph\include\cglm\util.h(159,50): warning C4142: 'glm_clamp': benign redefinition of type
 C:\Users\Light\source\repos\luagraph\include\cglm\util.h(170,25): warning C4142: 'glm_clamp_zo': benign redefinition of type
-C:\Users\Light\source\repos\luagraph\internalstuff.c(29,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(30,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(107,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(108,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(179,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(180,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(234,89): warning C4142: 'INTERNAL_CollisionPostFunc': benign redefinition of type
-C:\Users\Light\source\repos\luagraph\mainheader.h(84): message : see declaration of 'INTERNAL_CollisionPostFunc'
-C:\Users\Light\source\repos\luagraph\internalstuff.c(246,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(247,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(320,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(321,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\luagraph\internalstuff.c(390,39): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\luagraph\internalstuff.c(390,35): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\luagraph\internalstuff.c(429,80): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\luagraph\internalstuff.c(437,32): warning C4090: 'function': different 'const' qualifiers
-C:\Users\Light\source\repos\luagraph\internalstuff.c(438,32): warning C4090: 'function': different 'const' qualifiers
-C:\Users\Light\source\repos\luagraph\internalstuff.c(439,35): warning C4090: 'function': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\physics.h(8,23): warning C4091: 'extern ': ignored on left of 'listNode' when no variable is declared
+C:\Users\Light\source\repos\luagraph\physics.h(10,25): warning C4091: 'extern ': ignored on left of 'linkedList' when no variable is declared
+C:\Users\Light\source\repos\luagraph\physics.h(17,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(18,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(26,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(27,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(28,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(50,46): warning C4244: '=': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(52,64): warning C4244: '=': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(73,20): warning C4013: 'LIST_AddElement' undefined; assuming extern returning int
+C:\Users\Light\source\repos\luagraph\physics.h(40,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(41,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(42,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(45,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(46,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\physics.h(85,31): warning C4013: 'LIST_At' undefined; assuming extern returning int
+C:\Users\Light\source\repos\luagraph\physics.h(92,21): warning C4013: 'LIST_EmptyAt' undefined; assuming extern returning int
+C:\Users\Light\source\repos\luagraph\physics.h(84,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(85,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(103,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(104,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\physics.h(110,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(122,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(123,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'cpCollisionType', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(124,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(136,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(139,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(140,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(152,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(153,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(154,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(166,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(167,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(168,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(180,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(181,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(182,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(194,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(196,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(208,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(211,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(212,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(225,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(226,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(227,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(228,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(234,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(235,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(236,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(237,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(239,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(245,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(246,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(252,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(253,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(254,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(255,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(262,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(263,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(267,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(268,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(276,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(277,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(278,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(279,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(283,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(284,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(292,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(293,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(296,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(297,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(305,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(306,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(311,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(312,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(320,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(321,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(324,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(326,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(327,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(335,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(336,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(339,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(341,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(342,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(350,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(351,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(352,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(353,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(354,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(362,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(363,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(364,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(365,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(373,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(374,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(375,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(376,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(384,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(385,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(386,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(387,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(395,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(396,1): warning C4047: 'initializing': 'cpConstraint *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(411,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(413,1): warning C4047: 'initializing': 'cpConstraint *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(419,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(420,1): warning C4047: 'initializing': 'cpConstraint *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(422,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(423,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(439,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(440,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(448,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(449,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(450,1): warning C4047: 'initializing': 'lua_State *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(451,1): warning C4047: 'initializing': 'cpCollisionHandler *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(464,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(465,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(466,1): warning C4047: 'initializing': 'lua_State *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(467,1): warning C4047: 'initializing': 'cpCollisionHandler *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(480,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(481,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(482,1): warning C4047: 'initializing': 'lua_State *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(483,1): warning C4047: 'initializing': 'cpCollisionHandler *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(496,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(497,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(498,1): warning C4047: 'initializing': 'lua_State *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(499,1): warning C4047: 'initializing': 'cpCollisionHandler *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(513,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\physics.h(531,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(532,1): warning C4047: 'initializing': 'lua_State *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(539,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(540,1): warning C4047: 'initializing': 'lua_State *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(541,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\physics.h(550,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(551,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(557,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(558,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\physics.h(564,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(565,1): warning C4244: 'initializing': conversion from 'cpFloat' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\physics.h(566,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(19,1): warning C4047: 'initializing': 'cpBody *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\main.c(48,55): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(48,58): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(49,43): warning C4090: '=': different 'const' qualifiers
+C:\Users\Light\source\repos\luagraph\main.c(88,45): warning C4047: 'function': 'const GLfloat *' differs in levels of indirection from 'mat4'
+C:\Users\Light\source\repos\luagraph\main.c(88,40): warning C4024: 'glad_glUniformMatrix4fv': different types for formal and actual parameter 4
+C:\Users\Light\source\repos\luagraph\main.c(98,86): warning C4022: 'glad_glVertexAttribPointer': pointer mismatch for actual parameter 6
+C:\Users\Light\source\repos\luagraph\main.c(99,86): warning C4022: 'glad_glVertexAttribPointer': pointer mismatch for actual parameter 6
+C:\Users\Light\source\repos\luagraph\main.c(134,19): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(134,22): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(134,25): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(144,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\luagraph\main.c(144,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\luagraph\main.c(141,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(163,44): warning C4244: '=': conversion from 'lua_Number' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(166,40): warning C4244: '=': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(175,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\luagraph\main.c(175,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\luagraph\main.c(159,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(160,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(205,45): warning C4244: '=': conversion from 'lua_Number' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(208,40): warning C4244: '=': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(213,37): warning C4244: '=': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(216,37): warning C4244: '=': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(228,42): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\luagraph\main.c(228,38): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\luagraph\main.c(201,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(202,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(211,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(236,54): warning C4244: '=': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(248,42): warning C4244: '=': conversion from 'lua_Number' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(249,48): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(267,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(267,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(267,97): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(267,126): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(267,156): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(268,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(268,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(268,97): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(268,128): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(268,159): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(269,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(269,73): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(269,104): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(269,135): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(269,166): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(270,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(270,77): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(270,108): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(270,139): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(270,170): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(272,60): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(272,63): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(272,66): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(272,69): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(274,68): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(315,46): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(315,60): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(315,76): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(321,41): warning C4244: '=': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(396,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(397,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(442,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(465,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(466,1): warning C4047: 'initializing': 'TTF_Font *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\main.c(482,89): warning C4047: 'function': 'TTF_Font *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\main.c(482,62): warning C4024: 'TTF_RenderText_Blended': different types for formal and actual parameter 1
+C:\Users\Light\source\repos\luagraph\main.c(480,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(499,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(508,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(511,1): warning C4047: 'initializing': 'int' differs in levels of indirection from 'Mix_Chunk *'
+C:\Users\Light\source\repos\luagraph\main.c(528,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(529,1): warning C4047: 'initializing': 'Mix_Chunk *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\main.c(535,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(537,1): warning C4047: 'initializing': 'int' differs in levels of indirection from 'Mix_Music *'
+C:\Users\Light\source\repos\luagraph\main.c(549,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(550,1): warning C4047: 'initializing': 'Mix_Music *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\main.c(559,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(560,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(561,1): warning C4047: 'initializing': 'Mix_Chunk *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\main.c(570,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(571,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(572,1): warning C4047: 'initializing': 'Mix_Music *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\luagraph\main.c(580,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(583,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(599,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(600,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(602,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(612,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'float', possible loss of data
+C:\Users\Light\source\repos\luagraph\main.c(626,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
      Creating library C:\Users\Light\source\repos\luagraph\Release\luagraph.lib and object C:\Users\Light\source\repos\luagraph\Release\luagraph.exp
   Generating code
-  1 of 997 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+  1 of 1000 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   luagraph.vcxproj -> C:\Users\Light\source\repos\luagraph\Release\luagraph.dll
