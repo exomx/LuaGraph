@@ -362,7 +362,7 @@ static int LUAPROC_UpdateWindow(lua_State* L) {
 //light functions
 static int LUAPROC_DrawQuadFlyLight(lua_State* L) {
     glBindFramebuffer(GL_FRAMEBUFFER, lightframebuffer);
-    glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
+    glBlendFunc(GL_ONE, GL_ONE);
     luaL_checktype(L, 1, LUA_TTABLE);
     lua_getfield(L, 1, "x");
     lua_getfield(L, 1, "y");

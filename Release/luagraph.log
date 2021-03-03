@@ -263,8 +263,8 @@ C:\Users\Light\source\repos\luagraph\main.c(687,1): warning C4244: 'initializing
 C:\Users\Light\source\repos\luagraph\main.c(701,1): warning C4244: 'initializing': conversion from 'lua_Number' to 'int', possible loss of data
      Creating library C:\Users\Light\source\repos\luagraph\Release\luagraph.lib and object C:\Users\Light\source\repos\luagraph\Release\luagraph.exp
   Generating code
-  3 of 1000 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
+  1 of 1000 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   luagraph.vcxproj -> C:\Users\Light\source\repos\luagraph\Release\luagraph.dll
