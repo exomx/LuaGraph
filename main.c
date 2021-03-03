@@ -466,6 +466,14 @@ static int LUAPROC_HandleWindowEvents(lua_State* L) {
     lua_pushboolean(L, bReturn);
     return 3;
 }
+static int LUAPROC_ChangeCameraFov(lua_State* L) {
+    float w = luaL_checknumber(L, 1), h = luaL_checknumber(L, 2);
+    mat4 ortho;
+    glm_ortho(0, (float)w, (float)h, 0, 1.0, -1.0, ortho);
+    GLint location = glGetUniformLocation(default_shaders, "orthographic_projection");
+    glUniformMatrix4fv(location, 1, 0, ortho);
+
+}
 static int LUAPROC_MoveCamera(lua_State* L) {
     
     float camx = luaL_checknumber(L, 1);
@@ -728,6 +736,7 @@ static const struct luaL_reg libprocs[] = { //this is starting to look pretty yu
    {"set_glbuffer", LUAPROC_SetDrawBuffer},
    {"draw_glbuffer", LUAPROC_DrawCallBuffer},
    {"draw_line", LUAPROC_DrawLine},
+   {"camera_changefov", LUAPROC_ChangeCameraFov},
    {"camera_move", LUAPROC_MoveCamera},
    {"camera_getpos", LUAPROC_GetCameraPos},
    {"update_window", LUAPROC_UpdateWindow},
