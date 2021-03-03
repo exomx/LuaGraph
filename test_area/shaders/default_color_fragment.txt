@@ -9,5 +9,5 @@ uniform sampler2D texture1;
 
 void main(){
   FragColor = vertexColor * texture(texture1, texturecoord);
-
+	
 }

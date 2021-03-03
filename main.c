@@ -13,7 +13,7 @@ linkedList collisioncallbacks;
 linkedList lua_statelist;
 linkedList chunklists;
 linkedList musiclists;
-GLint default_shaders;
+GLint default_shaders, light_shaders;
 //needs to be defined here
 void INTERNAL_RemoveBodyFunc(int body_handle) {
     cpBody* tmp_body = LIST_At(&cbody, body_handle);
@@ -29,12 +29,14 @@ void INTERNAL_RemoveBodyFunc(int body_handle) {
 }
 //ew globals
 SDL_Color white = { 255,255,255 };
-GLint tmp_buf, tmp_vao, null_tex, drawbuf_tex, framebuf, framebuf_text; //global gl context stuff, might make it so lua can only have one context and one window, not sure
+GLint tmp_buf, tmp_vao, null_tex, drawbuf_tex; //global gl context stuff, might make it so lua can only have one context and one window, not sure
+GLint objectframebuffer, lightframebuffer, objectframebuffer_text, lightframebuffer_text; //draw everything on the object buffer except lights and blend them in the shader
 int gl_array_buffer_size = 0; //global size of array buffer
 int max_gl_array_buffer_size = 10; //measured in amount of quads
 int show_warnings_screen = 1, show_warnings_console = 1, show_errors_screen = 1, show_errors_console = 1, useframebuf = 0;
 int window_width, window_height;
 float camcoord[2], starttime, deltatime; //location of camera
+float backgroundcolor_r = 0, backgroundcolor_g = 1, backgroundcolor_b = 0, globallight_r = 1, globallight_g = 1, globallight_b = 1;
 SDL_Event eventhandle; //More global window stuff ik, we have to make a thread system to actually use the window list
 Uint8* key_input; //keyboard stuff
 cpSpace* space; //global chipmunk space, lord knows I dont want to make a list of these and have to manage them
@@ -86,6 +88,22 @@ static int LUAPROC_CreateGLContext(lua_State* L) {
     glUseProgram(default_shaders);
     GLint location = glGetUniformLocation(default_shaders, "orthographic_projection");
     glUniformMatrix4fv(location, 1, 0, ortho);
+    //now for light shaders
+    light_shaders = glCreateProgram();
+    {
+        GLint tmp_vertexs, tmp_fragments;
+        tmp_vertexs = GL_CompileShader("shaders/light_vertex.txt", GL_VERTEX_SHADER);
+        tmp_fragments = GL_CompileShader("shaders/light_fragment.txt", GL_FRAGMENT_SHADER);
+        glAttachShader(light_shaders, tmp_vertexs), glAttachShader(light_shaders, tmp_fragments);
+        glDeleteShader(tmp_vertexs), glDeleteShader(tmp_fragments);
+        glGetShaderInfoLog(tmp_vertexs, 512, NULL, buf1);
+        glGetShaderInfoLog(tmp_fragments, 512, NULL, buf2);
+    }
+    glLinkProgram(light_shaders);
+    glUseProgram(light_shaders);
+    location = glGetUniformLocation(light_shaders, "orthographic_projection");
+    glUniformMatrix4fv(location, 1, 0, ortho);
+    glUseProgram(default_shaders);
     //set up for draw square command
     int error = glGetError();
     glClearColor(0, 1, 0, 1);
@@ -108,15 +126,28 @@ static int LUAPROC_CreateGLContext(lua_State* L) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, white); //makes copy so we are set to free the surface
-    //set up framebuffer and its texture
-    glGenTextures(1, &framebuf_text);
-    glBindTexture(GL_TEXTURE_2D, framebuf_text);
+    //set up framebuffers
+    glGenTextures(1, &objectframebuffer_text);
+    glBindTexture(GL_TEXTURE_2D, objectframebuffer_text);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window_width, window_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glGenFramebuffers(1, &framebuf);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuf);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuf_text, 0);
+
+    glGenTextures(1, &lightframebuffer_text);
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_2D, lightframebuffer_text);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window_width, window_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glActiveTexture(GL_TEXTURE0);
+
+    glGenFramebuffers(1, &lightframebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, lightframebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, lightframebuffer_text, 0);
+
+    glGenFramebuffers(1, &objectframebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, objectframebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, objectframebuffer_text, 0);
 
     lua_pushnumber(L, error);
     lua_pushstring(L, buf1);
@@ -131,11 +162,18 @@ static int LUAPROC_ChangeBackgroundColor(lua_State* L) {
     double r = luaL_checknumber(L, 1);
     double g = luaL_checknumber(L, 2);
     double b = luaL_checknumber(L, 3);
-    glClearColor(r, g, b, 1);
+    backgroundcolor_r = r, backgroundcolor_g = g, backgroundcolor_b = b;
+    return 0;
+}
+static int LUAPROC_ChangeGlobalLight(lua_State* L) {
+    double r = luaL_checknumber(L, 1);
+    double g = luaL_checknumber(L, 2);
+    double b = luaL_checknumber(L, 3);
+    globallight_r = r, globallight_g = g, globallight_b = b;
     return 0;
 }
 static int LUAPROC_DrawLine(lua_State* L) {
-    
+    glBindFramebuffer(GL_FRAMEBUFFER, objectframebuffer);
     luaL_checktype(L, 1, LUA_TTABLE);
     lua_getfield(L, 1, "x1"), lua_getfield(L, 1, "y1"), lua_getfield(L, 1, "x2"), lua_getfield(L, 1, "y2"), lua_getfield(L, 1, "r"), lua_getfield(L, 1, "g"), lua_getfield(L, 1, "b");
     float x1 = luaL_checknumber(L, 2), y1 = luaL_checknumber(L, 3), x2 = luaL_checknumber(L, 4), y2 = luaL_checknumber(L, 5), r = luaL_checknumber(L, 6), g = luaL_checknumber(L, 7), b = luaL_checknumber(L, 8);
@@ -146,6 +184,7 @@ static int LUAPROC_DrawLine(lua_State* L) {
     return 0;
 }
 static int LUAPROC_DrawQuadFly(lua_State* L) { //fly meaning "on the fly"
+    glBindFramebuffer(GL_FRAMEBUFFER, objectframebuffer);
     luaL_checktype(L, 1, LUA_TTABLE);
     lua_getfield(L, 1, "x");
     lua_getfield(L, 1, "y");
@@ -179,7 +218,7 @@ static int LUAPROC_DrawQuadFly(lua_State* L) { //fly meaning "on the fly"
     return 1;
 }
 static int LUAPROC_DrawQuadFlyST(lua_State* L) { //fly meaning "on the fly"
-    
+    glBindFramebuffer(GL_FRAMEBUFFER, objectframebuffer);
     luaL_checktype(L, 1, LUA_TTABLE);
     luaL_checktype(L, 2, LUA_TTABLE);
     lua_getfield(L, 1, "x");
@@ -239,7 +278,6 @@ static int LUAPROC_SetMaxDrawBufferSize(lua_State* L) {
     return 1;
 }
 static int LUAPROC_SetDrawBuffer(lua_State* L) {
-    
     luaL_checktype(L, 1, LUA_TTABLE);
     lua_getfield(L, 1, "amount");
     lua_getfield(L, 1, "texture");
@@ -280,7 +318,7 @@ static int LUAPROC_SetDrawBuffer(lua_State* L) {
     return 1;
 }
 static int LUAPROC_DrawCallBuffer(lua_State* L) {
-    
+    glBindFramebuffer(GL_FRAMEBUFFER, objectframebuffer);
     if (drawbuf_tex)
         glBindTexture(GL_TEXTURE_2D, drawbuf_tex);
     else
@@ -291,35 +329,72 @@ static int LUAPROC_DrawCallBuffer(lua_State* L) {
     return 2;
 }
 static int LUAPROC_ClearWindow(lua_State* L) {
-    if (useframebuf)
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuf);
-    else
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, lightframebuffer);
+    glClearColor(globallight_r, globallight_g, globallight_b, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, objectframebuffer);
+    glClearColor(backgroundcolor_r, backgroundcolor_g, backgroundcolor_b, 1);
     glClear(GL_COLOR_BUFFER_BIT);
     return 0;
 }
-static int LUAPROC_GetFrameBufTextId(lua_State* L) {
-    if (useframebuf)
-        lua_pushnumber(L, framebuf_text);
-    else
-        lua_pushnumber(L, 0);
-    return 1;
-}
 static int LUAPROC_UpdateWindow(lua_State* L) {
-    
-    //render any errors here inconspicusly
-    DEBUG_Handle();
-    if (useframebuf) {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        INTERNAL_DrawQuadFly(0, window_height, window_width, -window_height, 1, 1, 1, framebuf_text, 0, 0); //So slow but fine for now
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    if (camcoord[0] != 0 | camcoord[1] != 0) { //translate to center
+        float tmp_camcoord[2] = { 0,0 };
+        int loc = glGetUniformLocation(default_shaders, "camloc");
+        glUniform2fv(loc, 1, tmp_camcoord);
     }
+    int loc = glGetUniformLocation(light_shaders, "camloc");
+    glUniform2fv(loc, 1, camcoord);
+    glUseProgram(light_shaders);
+    INTERNAL_DrawQuadFly(0, window_height, window_width, -window_height, 1, 1, 1, objectframebuffer_text, 0, 0);
+    glUseProgram(default_shaders);
+    DEBUG_Handle();
     SDL_GL_SwapWindow(global_window);
+    if (camcoord[0] != 0 | camcoord[1] != 0) { //translate back to camloc
+        int loc = glGetUniformLocation(default_shaders, "camloc");
+        glUniform2fv(loc, 1, camcoord);
+        loc = glGetUniformLocation(light_shaders, "camloc");
+        glUniform2fv(loc, 1, camcoord);
+    }
     return 0;
 }
-static int LUAPROC_RenderToggeFeatures(lua_State* L) {
-    useframebuf = luaL_checknumber(L, 1);
-    return 0;
+//light functions
+static int LUAPROC_DrawQuadFlyLight(lua_State* L) {
+    glBindFramebuffer(GL_FRAMEBUFFER, lightframebuffer);
+    glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
+    luaL_checktype(L, 1, LUA_TTABLE);
+    lua_getfield(L, 1, "x");
+    lua_getfield(L, 1, "y");
+    lua_getfield(L, 1, "w");
+    lua_getfield(L, 1, "h");
+    lua_getfield(L, 1, "r");
+    lua_getfield(L, 1, "g");
+    lua_getfield(L, 1, "b");
+    lua_getfield(L, 1, "texture");
+    lua_getfield(L, 1, "angle");
+    float x = luaL_checknumber(L, 2), y = luaL_checknumber(L, 3), w = luaL_checknumber(L, 4), h = luaL_checknumber(L, 5), r = luaL_checknumber(L, 6);
+    float g = luaL_checknumber(L, 7), b = luaL_checknumber(L, 8), angle = 0;
+    GLint texture_id = 0;
+    if (lua_type(L, 9) == LUA_TNUMBER)
+        texture_id = luaL_checknumber(L, 9);
+
+    if (lua_type(L, 10) == LUA_TNUMBER)
+        angle = luaL_checknumber(L, 10);
+
+    if (texture_id)
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+    else
+        glBindTexture(GL_TEXTURE_2D, null_tex);
+    float tmp_vertexes[28] = { x,y + h, r, g, b, 0, 1, x,y, r, g, b, 0, 0, x + w, y, r, g, b, 1, 0, x + w,y + h, r, g, b, 1, 1 }; //create correct points for quad
+    float* center_points = INTERNAL_GetCenterRect(x, y, w, h);
+    INTERNAL_RotateRectPoints(center_points, tmp_vertexes, angle);
+    glBufferSubData(GL_ARRAY_BUFFER, NULL, sizeof(float) * 28, tmp_vertexes); //the first spot is reserved for this function call
+    glDrawArrays(GL_QUADS, 0, 4);
+    int error = glGetError();
+    lua_pushnumber(L, error);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    return 1;
 }
 static int LUAPROC_HandleWindowEvents(lua_State* L) {
     
@@ -641,17 +716,17 @@ static int LUAPROC_DebugGetTime(lua_State* L) {
     return 1;
 }
 
-static const struct luaL_reg libprocs[] = {
+static const struct luaL_reg libprocs[] = { //this is starting to look pretty yucky, find a way to clean it up?
    {"open_window",LUAPROC_OpenWindow},
    {"close_window",LUAPROC_CloseWindow},
    {"create_renderer", LUAPROC_CreateGLContext},
    {"clear_window", LUAPROC_ClearWindow},
    {"change_backgroundcolor", LUAPROC_ChangeBackgroundColor},
+   {"change_globallighting", LUAPROC_ChangeGlobalLight},
    {"draw_quadfast", LUAPROC_DrawQuadFly},
    {"draw_quadfastsheet", LUAPROC_DrawQuadFlyST},
    {"set_glbuffer", LUAPROC_SetDrawBuffer},
    {"draw_glbuffer", LUAPROC_DrawCallBuffer},
-   {"getscreen", LUAPROC_GetFrameBufTextId},
    {"draw_line", LUAPROC_DrawLine},
    {"camera_move", LUAPROC_MoveCamera},
    {"camera_getpos", LUAPROC_GetCameraPos},
@@ -663,6 +738,7 @@ static const struct luaL_reg libprocs[] = {
    {"remove_font", LUAPROC_RemoveFont},
    {"create_fonttexture", LUAPROC_RenderFontFast},
    {"handle_windowevents", LUAPROC_HandleWindowEvents},
+   {"light_render", LUAPROC_DrawQuadFlyLight},
    {"script_compile", LUAPROC_CompileScript},
    {"script_setuserdata", LUAPROC_SetScriptUserData},
    {"script_remove", LUAPROC_RemoveScript},
@@ -714,7 +790,6 @@ static const struct luaL_reg libprocs[] = {
    {"debug_throw", LUAPROC_DebugError},
    {"debug_togglefeatures", LUAPROC_DebugToggleFeatures},
    {"debug_gettime", LUAPROC_DebugGetTime},
-   {"render_togglefeatures", LUAPROC_RenderToggeFeatures},
    {NULL, NULL}  /* sentinel */
 };
 extern _declspec(dllexport) int dll_main(lua_State*);

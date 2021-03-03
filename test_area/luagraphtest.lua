@@ -3,8 +3,7 @@ local window_handle, window_error = lua_graph.open_window("cool",800,800);
 local render_handle, render_error, a, b, loc = lua_graph.create_renderer(window_handle)
 
 lua_graph.debug_togglefeatures(true,true,true,true)
-screenid = lua_graph.getscreen()
-local render_texture = {x=0,y=200,w=200,h=-200,r=1,g=1,b=1,texture=screenid,angle=0}
+
 --up here I guess
 local bulletlist = {}
 --change background
@@ -169,6 +168,7 @@ count = 0
 playervelx = 0
 playervely = 0
 while true do
+timestart = lua_graph.debug_gettime()
 keytable, mouse, close = lua_graph.handle_windowevents(window_handle)
 if id > -1 then
 lua_graph.physics_setvel(id,tmp_vector)
@@ -197,7 +197,6 @@ line_table.y1 = spike_ball_center.y
 --control camera movement
 local camx, camy = lua_graph.camera_getpos()
 lua_graph.camera_move(player.x - 400, player.y - 400)
-print(camx)
 if keytable.d then
 local tmp_player_vel = {x=player_tmp_body.velx + 0.02,y=player_tmp_body.vely}
 lua_graph.physics_setvel(player_physicsbody, tmp_player_vel)
@@ -256,7 +255,6 @@ lua_graph.camera_move(0,0)
 lua_graph.draw_quadfast(black_background)
 lua_graph.draw_quadfast(text_rect)
 end
-lua_graph.draw_quadfast(render_texture)
 lua_graph.update_window(window_handle)
 
 
@@ -264,4 +262,5 @@ if close then
 return
 end
 count = count + 1
+print(1/(lua_graph.debug_gettime() - timestart))
 end
