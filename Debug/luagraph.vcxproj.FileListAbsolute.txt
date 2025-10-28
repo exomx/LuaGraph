@@ -1,2 +1,0 @@
-C:\Users\Light\source\repos\luagraph\Debug\luagraph.dll
-C:\Users\Light\source\repos\luagraph\Debug\luagraph.pdb

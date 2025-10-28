@@ -108,6 +108,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)/include;$(SolutionDir)</AdditionalIncludeDirectories>
       <StructMemberAlignment>Default</StructMemberAlignment>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

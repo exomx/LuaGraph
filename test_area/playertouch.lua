@@ -1,2 +1,0 @@
-toggle(true)
-return true

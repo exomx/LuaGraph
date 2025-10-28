@@ -804,7 +804,9 @@ static const struct luaL_reg libprocs[] = { //this is starting to look pretty yu
 extern _declspec(dllexport) int dll_main(lua_State*);
 int dll_main(lua_State* L) {
     SDL_Init(SDL_INIT_VIDEO);
-    IMG_Init(0);
+    if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG)) {
+        puts(SDL_GetError());
+    }
     TTF_Init();
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
